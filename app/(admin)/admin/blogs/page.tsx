@@ -4,7 +4,7 @@ import Link from "next/link";
 import { BlogsColumnsProps } from "./_components/columns";
 import { auth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
-import { CategoryTable } from "./_components/category-table";
+import { BlogTable } from "./_components/blog-table";
 import { getBlogs } from "@/actions/get-blogs";
 
 const BlogsPage = async () => {
@@ -31,7 +31,7 @@ const BlogsPage = async () => {
       <Link href="/admin/blogs/create">
         <Button>Create</Button>
       </Link>
-      <CategoryTable data={formatedCategories} />
+      <BlogTable data={formatedCategories} />
     </div>
   );
 };

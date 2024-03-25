@@ -2,9 +2,9 @@
 
 import { DataTable } from "@/components/data-table";
 import React, { useEffect, useState } from "react";
-import { CategoryColumnsProps, columns } from "./columns";
+import { BlogsColumnsProps, columns } from "./columns";
 
-export const CategoryTable = ({ data }: { data: CategoryColumnsProps[] }) => {
+export const BlogTable = ({ data }: { data: BlogsColumnsProps[] }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
