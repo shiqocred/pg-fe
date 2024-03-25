@@ -1,16 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import CellAction from "./cell-action";
 
 export interface CategoryColumnsProps {
@@ -20,7 +10,7 @@ export interface CategoryColumnsProps {
   branch: string;
 }
 
-export const columns: ColumnDef<CategoryColumnsProps>[] = [
+export const columnsCategory: ColumnDef<CategoryColumnsProps>[] = [
   {
     accessorKey: "name",
     header: () => <div className="text-center">Category Name</div>,

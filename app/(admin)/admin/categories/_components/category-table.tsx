@@ -2,7 +2,7 @@
 
 import { DataTable } from "@/components/data-table";
 import React, { useEffect, useState } from "react";
-import { CategoryColumnsProps, columns } from "./columns";
+import { CategoryColumnsProps, columnsCategory } from "./columns";
 
 export const CategoryTable = ({ data }: { data: CategoryColumnsProps[] }) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -14,5 +14,5 @@ export const CategoryTable = ({ data }: { data: CategoryColumnsProps[] }) => {
   if (!isMounted) {
     return null;
   }
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={columnsCategory} data={data} />;
 };
