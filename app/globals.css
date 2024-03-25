@@ -8,6 +8,29 @@ body {
   height: 100%;
 }
 
+.ql-container.ql-snow,
+.ql-toolbar.ql-snow {
+  border: none !important;
+}
+
+.ql-toolbar.ql-snow {
+  border-bottom: 1px solid #d1d5db !important;
+}
+
+.ql-editor {
+  min-height: 250px;
+}
+
+.ql-formats {
+  margin-right: 0px !important;
+  border-right: 0.5px solid black !important;
+  padding: 5px 10px !important;
+}
+
+.ql-formats:last-child {
+  border-right: 0px !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -76,6 +99,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

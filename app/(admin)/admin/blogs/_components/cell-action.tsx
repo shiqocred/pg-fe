@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { CategoryColumnsProps } from "./columns";
-import { cn } from "@/lib/utils";
+import { BlogsColumnsProps } from "./columns";
 
 interface CellActionProps {
-  data: CategoryColumnsProps;
+  data: BlogsColumnsProps;
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -25,7 +24,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
           className={"rounded-full"}
           variant={"ghost"}
           size={"icon"}
-          disabled={!data.owner}
+          disabled={!data.isOwner}
         >
           <MoreHorizontal className="h-4 w-4" />
         </Button>
@@ -34,7 +33,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <DropdownMenuItem
           onClick={() => {
             router.refresh();
-            router.push(`/admin/categories/${data.id}`);
+            router.push(`/admin/blogs/${data.id}`);
           }}
         >
           <Edit className="h-4 w-4 mr-2" />

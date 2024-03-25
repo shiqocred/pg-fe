@@ -1,7 +1,8 @@
 import { auth } from "@/hooks/use-auth";
 import { CategoryForm } from "./_components/category-form";
 import { db } from "@/lib/db";
-import { redirect, usePathname } from "next/navigation";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 const CreateCategoryPage = async ({
   params,

@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category } from "@prisma/client";
 import axios from "axios";
+import { revalidatePath } from "next/cache";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,6 +56,7 @@ export const CategoryForm = ({ initialData }: CategoryPageProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/categories");
+            router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
       } else {
@@ -64,6 +66,7 @@ export const CategoryForm = ({ initialData }: CategoryPageProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/categories");
+            router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
       }
@@ -71,8 +74,6 @@ export const CategoryForm = ({ initialData }: CategoryPageProps) => {
       toast.success("Something went wrong");
     }
   }
-
-  console.log(isMounted);
 
   useEffect(() => {
     setIsMounted(true);
