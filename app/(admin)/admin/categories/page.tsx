@@ -1,8 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { DataTable } from "@/components/data-table";
-import { CategoryColumnsProps, columns } from "./_components/columns";
+import { CategoryColumnsProps } from "./_components/columns";
 import { auth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { CategoryTable } from "./_components/category-table";
