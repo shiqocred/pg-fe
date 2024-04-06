@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const pathen = path.join(process.cwd() + "/public/images/");
+    const pathen = path.join(process.cwd() + "/public/images");
 
     const nameFile = `${
       Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
