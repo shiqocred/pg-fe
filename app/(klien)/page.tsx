@@ -1,13 +1,4 @@
 import { Card } from "@/components/ui/card";
-import {
-  image10,
-  image11,
-  image12,
-  imageGontor1,
-  imageGontor3,
-  imageGontor4,
-  imageGroup,
-} from "@/public/images/main";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -18,7 +9,7 @@ const HomePage = () => {
       <section className="w-screen h-[100svh] relative">
         <div className="absolute top-0 left-0 w-screen h-[100lvh]  flex justify-center">
           <Image
-            src={imageGroup}
+            src={"/images/main/group_2.webp"}
             alt=""
             className="absolute w-full h-auto top-0 left-0"
             priority
@@ -31,20 +22,20 @@ const HomePage = () => {
         </div>
         <div className="w-full flex justify-center items-center mt-5 relative">
           <Image
-            src={image10}
+            src={"/images/main/10.webp"}
             alt=""
             className="absolute -left-[130px] -top-5 w-[300px] opacity-20"
           />
           <div className="relative w-40 h-auto">
-            <Image src={image10} alt="" />
+            <Image src={"/images/main/10.webp"} alt="" />
           </div>
           <Image
-            src={image12}
+            src={"/images/main/12.webp"}
             alt=""
             className="absolute w-56 mr-2 top-[115px]"
           />
           <Image
-            src={image11}
+            src={"/images/main/11.webp"}
             alt=""
             className="absolute w-[300px] top-[250px]"
           />
@@ -63,7 +54,7 @@ const HomePage = () => {
           <Link href={"#"}>
             <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow p-2 border bg-transparent border-gray-300">
               <div className="w-full relatif aspect-video relative  rounded-md overflow-hidden shadow-md">
-                <Image src={imageGontor1} alt="" fill />
+                <Image src={"/images/main/gontor1.webp"} alt="" fill />
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
@@ -76,7 +67,7 @@ const HomePage = () => {
           <Link href={"#"}>
             <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow p-2 border bg-transparent border-gray-300">
               <div className="w-full relatif aspect-video relative  rounded-md overflow-hidden shadow-md">
-                <Image src={imageGontor3} alt="" fill />
+                <Image src={`/images/main/gontor3.webp`} alt="" fill />
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
@@ -89,7 +80,7 @@ const HomePage = () => {
           <Link href={"#"}>
             <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow p-2 border bg-transparent border-gray-300">
               <div className="w-full relatif aspect-video relative  rounded-md overflow-hidden shadow-md">
-                <Image src={imageGontor4} alt="" fill />
+                <Image src={"/images/main/gontor4.webp"} alt="" fill />
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
@@ -102,7 +93,7 @@ const HomePage = () => {
           <Link href={"#"}>
             <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow p-2 border bg-transparent border-gray-300">
               <div className="w-full relatif aspect-video relative  rounded-md overflow-hidden shadow-md">
-                <Image src={imageGontor1} alt="" fill />
+                <Image src={"/images/main/gontor1.webp"} alt="" fill />
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
@@ -115,7 +106,7 @@ const HomePage = () => {
           <Link href={"#"}>
             <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow p-2 border bg-transparent border-gray-300">
               <div className="w-full relatif aspect-video relative  rounded-md overflow-hidden shadow-md">
-                <Image src={imageGontor1} alt="" fill />
+                <Image src={"/images/main/gontor1.webp"} alt="" fill />
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
@@ -128,7 +119,7 @@ const HomePage = () => {
           <Link href={"#"}>
             <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow p-2 border bg-transparent border-gray-300">
               <div className="w-full relatif aspect-video relative  rounded-md overflow-hidden shadow-md">
-                <Image src={imageGontor1} alt="" fill />
+                <Image src={"/images/main/gontor1.webp"} alt="" fill />
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
