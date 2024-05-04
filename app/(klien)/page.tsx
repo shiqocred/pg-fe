@@ -71,7 +71,7 @@ const HomePage = () => {
               </div>
               <div>
                 <h2 className="font-bold text-xs hover:underline">
-                  Pondok Modern Darul Ma'rifat Kampus 3
+                  Pondok Modern Darul Ma&apos;rifat Kampus 3
                 </h2>
                 <p className="text-[10px]">Kediri, Jawa Timur</p>
               </div>

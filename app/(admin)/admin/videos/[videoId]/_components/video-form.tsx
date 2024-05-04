@@ -114,7 +114,7 @@ export const VideoForm = ({ initialData, categories }: BlogsProps) => {
   useEffect(() => {
     setIsMounted(true);
     setUrlVideo(initialData?.videoUrl ?? "");
-  }, []);
+  }, [initialData?.videoUrl]);
 
   if (!isMounted) {
     return null;

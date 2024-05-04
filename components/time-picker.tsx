@@ -29,7 +29,7 @@ export const TimePicker = ({ value, onChange }: TimePickerProps) => {
   useEffect(() => {
     setHour(getTime[0]);
     setMinute(getTime[1]);
-  }, []);
+  }, [getTime]);
   return (
     <div>
       {hour} - {minute}
