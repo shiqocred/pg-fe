@@ -8,40 +8,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CabangRole, Category, Post } from "@prisma/client";
+import { $Enums, Post } from "@prisma/client";
 import axios from "axios";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-import { z } from "zod";
 
 interface BlogsProps {
   initialData: Post | null;
   categories: {
     profile: {
-      branches: {
-        id: string;
-        cabang: CabangRole;
-      } | null;
+      id: string;
+      cabang: $Enums.CabangRole;
     };
     id: string;
-    name: string;
     profileId: string;
+    name: string;
   }[];
 }
 
@@ -61,6 +49,7 @@ export const BlogsForm = ({ initialData, categories }: BlogsProps) => {
     highlight: string;
     category: string;
     article: string;
+    isPublish: boolean;
     imageUrl: FileList | null;
   }>({
     title: initialData?.title ?? "",
@@ -68,6 +57,7 @@ export const BlogsForm = ({ initialData, categories }: BlogsProps) => {
     highlight: initialData?.highlight ?? "",
     category: initialData?.categoryId ?? "",
     article: initialData?.article ?? "",
+    isPublish: initialData?.isPublish ?? false,
     imageUrl: null,
   });
 
@@ -78,44 +68,37 @@ export const BlogsForm = ({ initialData, categories }: BlogsProps) => {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      const body = new FormData();
+      if (input.imageUrl) {
+        body.append("imageUrl", input.imageUrl[0]);
+      }
+      body.append("title", input.title);
+      body.append("author", input.author);
+      body.append("highlight", input.highlight);
+      body.append("category", input.category);
+      body.append("article", input.article);
+      body.append("isPublish", input.isPublish.toString());
+
       if (!initialData) {
         //     // add
-        const body = new FormData();
-        if (input.imageUrl) {
-          body.append("imageUrl", input.imageUrl[0]);
-        }
-        body.append("title", input.title),
-          body.append("author", input.author),
-          body.append("highlight", input.highlight),
-          body.append("category", input.category),
-          body.append("article", input.article),
-          axios
-            .post("/api/admin/blogs", body)
-            .then((response) => {
-              toast.success(response.data);
-              router.push("/admin/blogs");
-              router.refresh();
-            })
-            .catch((error) => toast.error(error.response.data));
+        axios
+          .post("/api/admin/blogs", body)
+          .then((response) => {
+            toast.success(response.data);
+            router.push("/admin/blogs");
+            router.refresh();
+          })
+          .catch((error) => toast.error(error.response.data));
       } else {
         // edit
-        const body = new FormData();
-        if (input.imageUrl) {
-          body.append("imageUrl", input.imageUrl[0]);
-        }
-        body.append("title", input.title),
-          body.append("author", input.author),
-          body.append("highlight", input.highlight),
-          body.append("category", input.category),
-          body.append("article", input.article),
-          axios
-            .patch(`/api/admin/blogs/${params.blogId}`, body)
-            .then((response) => {
-              toast.success(response.data);
-              router.push("/admin/blogs");
-              router.refresh();
-            })
-            .catch((error) => toast.error(error.response.data));
+        axios
+          .patch(`/api/admin/blogs/${params.blogId}`, body)
+          .then((response) => {
+            toast.success(response.data);
+            router.push("/admin/blogs");
+            router.refresh();
+          })
+          .catch((error) => toast.error(error.response.data));
       }
     } catch (error) {
       toast.success("Something went wrong");
@@ -202,6 +185,15 @@ export const BlogsForm = ({ initialData, categories }: BlogsProps) => {
               value={input.highlight}
               onChange={onChange}
             />
+            <Label className="flex items-center gap-x-2">
+              <Switch
+                checked={input.isPublish}
+                onCheckedChange={(e) =>
+                  setInput((prev) => ({ ...prev, isPublish: e }))
+                }
+              />
+              <span>Publish</span>
+            </Label>
           </div>
         </div>
         <Editor

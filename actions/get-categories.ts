@@ -13,12 +13,8 @@ export const getCategories = async () => {
       profileId: true,
       profile: {
         select: {
-          branches: {
-            select: {
-              cabang: true,
-              id: true,
-            },
-          },
+          id: true,
+          cabang: true,
         },
       },
     },

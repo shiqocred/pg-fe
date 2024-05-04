@@ -18,7 +18,7 @@ const CategoriesPage = async () => {
     id: item.id,
     name: item.name,
     owner: item.profileId === userId,
-    branch: item.profile.branches?.cabang ?? "",
+    branch: item.profile.cabang ?? "",
   }));
 
   return (

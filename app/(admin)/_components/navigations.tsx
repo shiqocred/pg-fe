@@ -2,10 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LucideIcon, LucideProps } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Images, Layers3, MonitorPlay, Newspaper } from "lucide-react";
+import {
+  Home,
+  Images,
+  Layers3,
+  MonitorPlay,
+  Newspaper,
+  SwatchBook,
+} from "lucide-react";
 
 const menuMap = [
   { label: "Beranda", href: "/admin/dashboard", icon: Home },
@@ -13,11 +19,11 @@ const menuMap = [
   { label: "Blog", href: "/admin/blogs", icon: Newspaper },
   { label: "Video", href: "/admin/videos", icon: MonitorPlay },
   { label: "Poster", href: "/admin/posters", icon: Images },
+  { label: "Roundown", href: "/admin/roundowns", icon: SwatchBook },
 ];
 
 export const Navigations = () => {
   const pathname = usePathname();
-  //   console.log("/admin/categories" !== menuMap[0].href);
   return (
     <ul className="w-full flex flex-col gap-y-2">
       {menuMap.map((item) => (

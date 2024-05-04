@@ -15,20 +15,6 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const existingBranch = await db.branch.findUnique({
-      where: {
-        profileId: userId,
-      },
-      select: {
-        id: true,
-        cabang: true,
-      },
-    });
-
-    if (!existingBranch) {
-      return new NextResponse("Unauthorized", { status: 401 });
-    }
-
     const data = await req.formData();
     const file: File | null = data.get("imageUrl") as unknown as File;
     const title: string = data.get("title") as unknown as string;
@@ -36,6 +22,7 @@ export async function PATCH(
     const highlight: string = data.get("highlight") as unknown as string;
     const article: string = data.get("article") as unknown as string;
     const category: string = data.get("category") as unknown as string;
+    const isPublish: string = data.get("isPublish") as unknown as string;
 
     if (file) {
       const bytes = await file.arrayBuffer();
@@ -57,11 +44,13 @@ export async function PATCH(
 
       await unlink(currentPath);
 
-      const pathen = path.join(process.cwd() + "/public/images/");
+      const pathen = path.join(process.cwd() + "/public/images");
 
       const nameFile = `${
         Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-      }-${file.name}`;
+      }-${title.toLocaleLowerCase().split(" ").join("_")}.${
+        file.type.split("/")[1]
+      }`;
 
       const pathname = `/images/${nameFile}`;
 
@@ -85,7 +74,7 @@ export async function PATCH(
           article: article,
           categoryId: category,
           profileId: userId,
-          branchId: existingBranch.id,
+          isPublish: isPublish === "true" ? true : false,
         },
       });
     } else {
@@ -100,7 +89,7 @@ export async function PATCH(
           article: article,
           categoryId: category,
           profileId: userId,
-          branchId: existingBranch.id,
+          isPublish: isPublish === "true" ? true : false,
         },
       });
     }

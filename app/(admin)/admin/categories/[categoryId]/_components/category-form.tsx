@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Category } from "@prisma/client";
 import axios from "axios";
-import { revalidatePath } from "next/cache";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

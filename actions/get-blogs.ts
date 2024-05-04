@@ -13,15 +13,11 @@ export const getBlogs = async () => {
       author: true,
       highlight: true,
       createdAt: true,
+      isPublish: true,
       profile: {
         select: {
           id: true,
           username: true,
-        },
-      },
-      branch: {
-        select: {
-          id: true,
           cabang: true,
         },
       },

@@ -27,47 +27,22 @@ async function main() {
     ];
 
     const profileData = [
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-      { username: genUser(), password: await hashes() },
-    ];
-
-    // Data branch
-    const branchData = [
-      { cabang: role[0], profile: profileData[0] },
-      { cabang: role[1], profile: profileData[1] },
-      { cabang: role[2], profile: profileData[2] },
-      { cabang: role[3], profile: profileData[3] },
-      { cabang: role[4], profile: profileData[4] },
-      { cabang: role[5], profile: profileData[5] },
-      { cabang: role[6], profile: profileData[6] },
-      { cabang: role[7], profile: profileData[7] },
-      { cabang: role[8], profile: profileData[8] },
-      { cabang: role[9], profile: profileData[9] },
-      { cabang: role[10], profile: profileData[10] },
+      { username: genUser(), password: await hashes(), cabang: role[0] },
+      { username: genUser(), password: await hashes(), cabang: role[1] },
+      { username: genUser(), password: await hashes(), cabang: role[2] },
+      { username: genUser(), password: await hashes(), cabang: role[3] },
+      { username: genUser(), password: await hashes(), cabang: role[4] },
+      { username: genUser(), password: await hashes(), cabang: role[5] },
+      { username: genUser(), password: await hashes(), cabang: role[6] },
+      { username: genUser(), password: await hashes(), cabang: role[7] },
+      { username: genUser(), password: await hashes(), cabang: role[8] },
+      { username: genUser(), password: await hashes(), cabang: role[9] },
+      { username: genUser(), password: await hashes(), cabang: role[10] },
     ];
 
     // Simpan data ke database
-    await Promise.all(
-      branchData.map(async (branch) => {
-        const { cabang, profile } = branch;
-        const createdProfile = await database.profile.create({ data: profile });
-        await database.branch.create({
-          data: {
-            cabang,
-            profileId: createdProfile.id,
-          },
-        });
-      })
-    );
+    await database.profile.createMany({ data: profileData });
+
     console.log("Seeding the database categories success");
   } catch (error) {
     console.log("Error seeding the database categories", error);

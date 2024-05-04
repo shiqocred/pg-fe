@@ -11,22 +11,8 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
   directUrl = env("DATABASE_URL_UNPOOLED")
-}
-
-model Profile {
-  id       String @id @default(cuid())
-  username Int
-  password String
-
-  branches  Branch?
-  posts     Post[]
-  caegories Category[]
-  videos    Video[]
-  roundowns Roundown[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
 }
 
 enum CabangRole {
@@ -44,21 +30,20 @@ enum CabangRole {
   PUTRI7
 }
 
-model Branch {
-  id     String     @id @default(cuid())
-  cabang CabangRole
-
-  profileId String  @unique
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+model Profile {
+  id       String     @id @default(cuid())
+  username Int
+  password String
+  cabang   CabangRole
 
   posts     Post[]
+  caegories Category[]
   videos    Video[]
   roundowns Roundown[]
+  posters   Poster[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
-
-  @@index([profileId])
 }
 
 model Category {
@@ -68,8 +53,9 @@ model Category {
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  posts  Post[]
-  videos Video[]
+  posts   Post[]
+  videos  Video[]
+  posters Poster[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
@@ -78,18 +64,16 @@ model Category {
 }
 
 model Post {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   title     String
-  highlight String @db.Text
-  article   String @db.Text
-  imageUrl  String @db.Text
+  highlight String  @db.Text
+  article   String  @db.Text
+  imageUrl  String  @db.Text
   author    String
+  isPublish Boolean @default(false)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  branchId String
-  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -98,22 +82,18 @@ model Post {
   updatedAt DateTime @updatedAt()
 
   @@index([profileId])
-  @@index([branchId])
   @@index([categoryId])
 }
 
 model Video {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
-  description String @db.Text
-  videoUrl    String @db.Text
-  thumnailUrl String @db.Text
+  description String  @db.Text
+  videoUrl    String  @db.Text
+  isPublish   Boolean @default(false)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  branchId String
-  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -122,23 +102,40 @@ model Video {
   updatedAt DateTime @updatedAt()
 
   @@index([profileId])
-  @@index([branchId])
   @@index([categoryId])
 }
 
-model Roundown {
-  id         String @id @default(cuid())
-  appearance String
+model Poster {
+  id          String  @id @default(cuid())
+  title       String
+  description String  @db.Text
+  posterUrl   String  @db.Text
+  isPublish   Boolean @default(false)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
-  branchId String
-  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
   @@index([profileId])
-  @@index([branchId])
+  @@index([categoryId])
+}
+
+model Roundown {
+  id       String  @id @default(cuid())
+  title    String
+  imageUrl String?
+  position Int
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([profileId])
 }

@@ -104,3 +104,70 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: "avenir";
+  font-style: normal;
+  font-weight: 300;
+  src: url("/fonts/Avenir-350-Light.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Avenir-450-Book.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Avenir-550-Roman.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: normal;
+  font-weight: 600;
+  src: url("/fonts/Avenir-650-Medium.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: normal;
+  font-weight: 800;
+  src: url("/fonts/Avenir-850-Heavy.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: normal;
+  font-weight: 900;
+  src: url("/fonts/Avenir-950-Black.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: italic;
+  font-weight: 400;
+  src: url("/fonts/Avenir-450-Oblique.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: italic;
+  font-weight: 500;
+  src: url("/fonts/Avenir-550-Oblique.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: italic;
+  font-weight: 600;
+  src: url("/fonts/Avenir-650-Oblique.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: italic;
+  font-weight: 800;
+  src: url("/fonts/Avenir-850-Oblique.otf") format("truetype");
+}
+@font-face {
+  font-family: "avenir";
+  font-style: italic;
+  font-weight: 900;
+  src: url("/fonts/Avenir-950-Oblique.otf") format("truetype");
+}

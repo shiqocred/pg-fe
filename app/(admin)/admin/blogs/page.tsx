@@ -12,26 +12,31 @@ const BlogsPage = async () => {
 
   if (!userId) return redirect("/login");
 
-  const categories = await getBlogs();
+  const blog = await getBlogs();
 
-  const formatedCategories: BlogsColumnsProps[] = categories.map((item) => ({
+  const formatedBlogs: BlogsColumnsProps[] = blog.map((item) => ({
     id: item.id,
     title: item.title,
     category: item.category.name,
     author: item.author,
-    cabang: item.branch.cabang,
+    cabang: item.profile.cabang,
     highlight: item.highlight,
     isOwner: item.profile.id === userId,
-    isPublish: false,
+    isPublish: item.isPublish,
   }));
 
   return (
     <div className="flex flex-col gap-y-4 p-6">
-      Categories Page
+      Blogs Page
       <Link href="/admin/blogs/create">
         <Button>Create</Button>
       </Link>
-      <BlogTable data={formatedCategories} />
+      <BlogTable data={formatedBlogs} />
+      {/* <iframe
+        src="https://www.youtube.com/embed/VuHqYB-hH7k?vq=hd1080&modestbranding=1&rel=0&hl=id-ID"
+        className="w-[500px] aspect-video rounded-md"
+        allowFullScreen
+      /> */}
     </div>
   );
 };
