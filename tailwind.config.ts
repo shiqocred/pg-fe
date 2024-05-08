@@ -20,6 +20,7 @@ const config = {
     extend: {
       fontFamily: {
         avenir: ["avenir", "sans-serif"],
+        revans: ["revans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

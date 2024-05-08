@@ -171,3 +171,9 @@ body {
   font-weight: 900;
   src: url("/fonts/Avenir-950-Oblique.otf") format("truetype");
 }
+@font-face {
+  font-family: "revans";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Revans-Medium.ttf") format("truetype");
+}
