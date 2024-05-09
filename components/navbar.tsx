@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export const Navbar = () => {
   return (
-    <div className="w-full sticky top-0 left-0 h-16 bg-white/20 backdrop-blur-sm z-10 px-3 flex items-center justify-between shadow-sm">
+    <div className="w-full sticky top-0 left-0 h-16 bg-white/20 backdrop-blur-sm z-50 px-3 flex items-center justify-between shadow-sm">
       <Link href={"#"} className="flex gap-1 items-center">
         <div className="h-11 aspect-square relative">
           <Image src={"/images/main/9.webp"} alt="" fill />
