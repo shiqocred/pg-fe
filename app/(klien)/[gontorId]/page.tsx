@@ -69,7 +69,7 @@ const GontorIdPage = () => {
         </div>
         <div className="border relative border-[#7B897F] w-full px-4 py-1.5 rounded-l-md flex items-center">
           <h5 className="bg-[#EBF0E5] text-[#7B897F] px-1 absolute -top-1.5 right-3 text-xs leading-none">
-            Time?
+            Where?
           </h5>
           <p className="text-[#26401D] text-sm mt-2 text-right">
             Depan Masjid Jami&apos; Gontor
@@ -363,7 +363,7 @@ const GontorIdPage = () => {
       </section>
       <section className="flex w-full py-10 px-3 border-b border-[#7B897F] flex-col gap-2 h-full">
         <div className="text-center w-full">
-          <h3 className="text-lg">SUPERVAISORS</h3>
+          <h3 className="text-lg">SUPERVISORS</h3>
           <p className="text-xs">
             The leaders who gives touch of wisdom behind every art
           </p>
