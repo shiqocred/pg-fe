@@ -12,7 +12,7 @@ const HomePage = () => {
           fill
           src={"/images/main/group_2.webp"}
           alt=""
-          className="absolute w-full h-auto top-0 left-0"
+          className="absolute w-full h-auto top-0 left-0 pointer-events-none"
           priority
         />
       </section>
@@ -23,20 +23,30 @@ const HomePage = () => {
         <div className="w-full flex justify-center items-center mt-5 relative">
           <div className="absolute -left-[130px] -top-5 opacity-20">
             <div className="relative w-[300px] aspect-[8/11]">
-              <Image fill src={"/images/main/10.webp"} alt="" />
+              <Image
+                fill
+                className="pointer-events-none"
+                src={"/images/main/10.webp"}
+                alt=""
+              />
             </div>
           </div>
           <div className="relative w-40 aspect-[8/11]">
-            <Image fill src={"/images/main/10.webp"} alt="" />
-          </div>
-          <div className="absolute top-[115px]">
-            <div className="relative w-56 aspect-[27/20]">
-              <Image fill src={"/images/main/12.webp"} alt="" />
-            </div>
+            <Image
+              fill
+              className="pointer-events-none"
+              src={"/images/main/10.webp"}
+              alt=""
+            />
           </div>
           <div className="absolute top-[250px]">
             <div className="relative w-[300px] aspect-[19/6]">
-              <Image fill src={"/images/main/11.webp"} alt="" />
+              <Image
+                fill
+                className="pointer-events-none"
+                src={"/images/main/11.webp"}
+                alt=""
+              />
             </div>
           </div>
         </div>

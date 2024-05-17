@@ -21,7 +21,12 @@ export const CardPondok = ({
     <Link href={href}>
       <Card className="w-full gap-4 flex flex-col overflow-hidden rounded-md shadow p-3 border bg-transparent border-gray-300">
         <div className="w-full relatif object-cover aspect-video relative  rounded-md overflow-hidden shadow-md">
-          <Image className="object-cover" src={image} alt="" fill />
+          <Image
+            className="object-cover pointer-events-none"
+            src={image}
+            alt=""
+            fill
+          />
         </div>
         <div className="flex flex-col w-full gap-2">
           <h2 className="font-bold text-sm hover:underline">{title}</h2>
