@@ -41,7 +41,6 @@ export async function PATCH(
     await db.category.update({
       where: {
         id: params.categoryId,
-        profileId: userId,
       },
       data: {
         name: values.name,

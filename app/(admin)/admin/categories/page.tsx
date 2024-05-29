@@ -6,11 +6,25 @@ import { auth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { CategoryTable } from "./_components/category-table";
 import { getCategories } from "@/actions/get-categories";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Header } from "@/components/header";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 const CategoriesPage = async () => {
   const { userId } = await auth();
 
   if (!userId) return redirect("/login");
+
+  const isAdmin = await getIsAdmin(userId);
+
+  if (!isAdmin) return redirect("/admin/dashboard");
 
   const categories = await getCategories();
 
@@ -22,11 +36,21 @@ const CategoriesPage = async () => {
   }));
 
   return (
-    <div className="flex flex-col gap-y-4 p-6">
-      Categories Page
-      <Link href="/admin/categories/create">
-        <Button>Create</Button>
-      </Link>
+    <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
+      <Header title="Categories Page" description="Resize with tags" />
+      <div className="w-full font-avenir font-normal flex text-sm mt-1 mb-3">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/admin/dashboard">Admin</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Categories</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <CategoryTable data={formatedCategories} />
     </div>
   );

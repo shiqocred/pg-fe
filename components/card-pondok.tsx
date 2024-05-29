@@ -19,8 +19,8 @@ export const CardPondok = ({
 }: CardPondokProps) => {
   return (
     <Link href={href}>
-      <Card className="w-full gap-4 flex flex-col overflow-hidden rounded-md shadow p-3 border bg-transparent border-gray-300">
-        <div className="w-full relatif object-cover aspect-video relative  rounded-md overflow-hidden shadow-md">
+      <Card className="group h-full w-full gap-3 flex flex-col overflow-hidden rounded-md shadow p-1.5 border bg-transparent border-gray-300 font-avenir">
+        <div className="w-full relatif object-cover aspect-video relative  rounded-sm overflow-hidden shadow-md flex-none">
           <Image
             className="object-cover pointer-events-none"
             src={image}
@@ -28,8 +28,8 @@ export const CardPondok = ({
             fill
           />
         </div>
-        <div className="flex flex-col w-full gap-2">
-          <h2 className="font-bold text-sm hover:underline">{title}</h2>
+        <div className="flex flex-col w-full gap-2 h-full justify-between">
+          <h2 className="font-bold text-sm group-hover:underline">{title}</h2>
           <p className="text-xs text-gray-500 flex items-center gap-1 leading-none">
             <LocateFixed className="w-[10px] h-[10px] mb-0.5" />
             {location}

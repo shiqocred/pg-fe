@@ -9,10 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  // uncomment next line if you use Prisma <5.10
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 enum CabangRole {
@@ -34,13 +32,21 @@ model Profile {
   id       String     @id @default(cuid())
   username Int
   password String
+  waktu    String?
+  tanggal  String?
+  tempat   String?
+  heroUrl  String?
   cabang   CabangRole
 
-  posts     Post[]
-  caegories Category[]
-  videos    Video[]
-  roundowns Roundown[]
-  posters   Poster[]
+  posts       Post[]
+  caegories   Category[]
+  videos      Video[]
+  roundowns   Roundown[]
+  posters     Poster[]
+  supervisors Supervisor[]
+  photos      Photo[]
+  sponsors    Sponsor[]
+  faqs        Faq[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
@@ -86,11 +92,11 @@ model Post {
 }
 
 model Video {
-  id          String  @id @default(cuid())
-  title       String
-  description String  @db.Text
-  videoUrl    String  @db.Text
-  isPublish   Boolean @default(false)
+  id           String  @id @default(cuid())
+  title        String
+  videoUrl     String  @db.Text
+  thumbnailUrl String  @db.Text
+  isPublish    Boolean @default(false)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -106,11 +112,10 @@ model Video {
 }
 
 model Poster {
-  id          String  @id @default(cuid())
-  title       String
-  description String  @db.Text
-  posterUrl   String  @db.Text
-  isPublish   Boolean @default(false)
+  id        String  @id @default(cuid())
+  title     String
+  posterUrl String  @db.Text
+  isPublish Boolean @default(false)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -129,6 +134,78 @@ model Roundown {
   id       String  @id @default(cuid())
   title    String
   imageUrl String?
+  position Int
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([profileId])
+}
+
+enum PositionSupervisor {
+  CHIEF
+  STAFF
+}
+
+model Supervisor {
+  id       String             @id @default(cuid())
+  name     String
+  imageUrl String?
+  position PositionSupervisor
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([profileId])
+}
+
+model Photo {
+  id       String  @id @default(cuid())
+  imageUrl String?
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([profileId])
+}
+
+enum SponsorEnum {
+  TUNGGAL
+  UTAMA
+  PENDAMPING1
+  PENDAMPING2
+  PENDAMPING3
+}
+
+model Sponsor {
+  id       String      @id @default(cuid())
+  name     String
+  imageUrl String?
+  href     String?
+  position SponsorEnum
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([profileId])
+}
+
+model Faq {
+  id       String @id @default(cuid())
+  question String @db.Text
+  answer   String @db.Text
   position Int
 
   profileId String

@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { mkdir, readdir, writeFile, unlink } from "fs/promises";
 import path from "path";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export async function PATCH(
   req: Request,
@@ -44,7 +45,7 @@ export async function PATCH(
 
       await unlink(currentPath);
 
-      const pathen = path.join(process.cwd() + "/public/images");
+      const pathen = path.join(process.cwd() + "/public/images/blogs");
 
       const nameFile = `${
         Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
@@ -52,7 +53,7 @@ export async function PATCH(
         file.type.split("/")[1]
       }`;
 
-      const pathname = `/images/${nameFile}`;
+      const pathname = `/images/blogs/${nameFile}`;
 
       try {
         await readdir(pathen);
@@ -73,7 +74,6 @@ export async function PATCH(
           imageUrl: pathname,
           article: article,
           categoryId: category,
-          profileId: userId,
           isPublish: isPublish === "true" ? true : false,
         },
       });
@@ -88,7 +88,6 @@ export async function PATCH(
           highlight: highlight,
           article: article,
           categoryId: category,
-          profileId: userId,
           isPublish: isPublish === "true" ? true : false,
         },
       });

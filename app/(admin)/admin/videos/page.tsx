@@ -1,35 +1,79 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { VideoColumnsProps } from "./_components/columns";
 import { auth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { VideoTable } from "./_components/video-table";
 import { getVideos } from "@/actions/get-videos";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Header } from "@/components/header";
+import { mapCabang } from "@/lib/utils";
+import { formatDistanceStrict } from "date-fns";
+import { id as indonesia } from "date-fns/locale";
+
+export interface VideoColumnsProps {
+  id: string;
+  title: string;
+  category: string;
+  videoUrl: string;
+  thumbnailUrl: string;
+  isPublish: boolean;
+  cabang: string;
+  isAdmin: boolean;
+  date: string;
+}
 
 const VideosPage = async () => {
   const { userId } = await auth();
 
   if (!userId) return redirect("/login");
 
-  const videos = await getVideos();
+  const videos = await getVideos(userId);
 
   const formatedVideos: VideoColumnsProps[] = videos.map((item) => ({
     id: item.id,
     title: item.title,
     category: item.category.name,
-    description: item.description,
     videoUrl: item.videoUrl,
-    isOwner: item.profile.id === userId,
+    thumbnailUrl: item.thumbnailUrl,
+    cabang:
+      mapCabang
+        .find((i) => i.value === item.profile.cabang)
+        ?.label.split("-")
+        .join(" ") ?? item.profile.cabang,
+    date: formatDistanceStrict(
+      item.createdAt.toString(),
+      new Date().toString(),
+      {
+        addSuffix: true,
+        locale: indonesia,
+      }
+    ),
     isPublish: item.isPublish,
+    isAdmin: item.admin,
   }));
 
   return (
-    <div className="flex flex-col gap-y-4 p-6">
-      Videos Page
-      <Link href="/admin/videos/create">
-        <Button>Create</Button>
-      </Link>
+    <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
+      <Header title="Videos Page" description="BTS Videos" />
+      <div className="w-full font-avenir font-normal flex text-sm mt-1 mb-3">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/admin/dashboard">Admin</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Videos</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <VideoTable data={formatedVideos} />
     </div>
   );

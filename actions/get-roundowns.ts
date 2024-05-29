@@ -17,6 +17,7 @@ export const getRoundowns = async (authId: string) => {
       position: true,
       profile: {
         select: {
+          id: true,
           cabang: true,
         },
       },

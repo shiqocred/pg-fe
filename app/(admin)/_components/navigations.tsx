@@ -1,47 +1,81 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, mapCabang } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+import { $Enums } from "@prisma/client";
 import {
-  Home,
-  Images,
-  Layers3,
-  MonitorPlay,
-  Newspaper,
-  SwatchBook,
-} from "lucide-react";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { Isi } from "./isi";
 
-const menuMap = [
-  { label: "Beranda", href: "/admin/dashboard", icon: Home },
-  { label: "Category", href: "/admin/categories", icon: Layers3 },
-  { label: "Blog", href: "/admin/blogs", icon: Newspaper },
-  { label: "Video", href: "/admin/videos", icon: MonitorPlay },
-  { label: "Poster", href: "/admin/posters", icon: Images },
-  { label: "Roundown", href: "/admin/roundowns", icon: SwatchBook },
-];
+interface Props {
+  id: string;
+  cabang: $Enums.CabangRole | undefined;
+  isAdmin: boolean;
+}
 
-export const Navigations = () => {
-  const pathname = usePathname();
+export const Navigations = (props: Props) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const { id, cabang, isAdmin } = props;
+  const [isNavAdmin, setIsNavAdmin] = useState(false);
+  const [navCabang, setNavCabang] = useState<string | undefined>("");
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/auth/logout", {});
+      router.push("/login");
+      toast.success("Logout berhasil");
+    } catch (error) {
+      console.log("ERROR_LOGOUT", error);
+      toast.success("Logout gagal");
+    }
+  };
+
+  useEffect(() => {
+    setIsNavAdmin(isAdmin);
+    setNavCabang(cabang);
+  }, [isAdmin, cabang]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return;
+  }
   return (
-    <ul className="w-full flex flex-col gap-y-2">
-      {menuMap.map((item) => (
-        <li key={item.label}>
-          <Link href={item.href}>
-            <Button
-              className={cn(
-                "w-full hover:bg-gray-200 bg-transparent justify-start",
-                pathname.includes(item.href) && "bg-gray-200 hover:bg-gray-300"
-              )}
-              variant={"ghost"}
-            >
-              <item.icon className="h-4 w-4 mr-2" />
-              {item.label}
-            </Button>
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <div className="h-full w-full flex flex-col justify-between">
+      <Isi isAdmin={isNavAdmin} />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button className="w-full bg-gray-300 hover:bg-gray-400 text-black capitalize justify-start">
+            Hi,{" "}
+            {navCabang === "ALL"
+              ? "Admin"
+              : mapCabang
+                  .find((item) => item.value === cabang)
+                  ?.label.split("-")
+                  .join(" ")}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="right" sideOffset={30}>
+          <DropdownMenuGroup>
+            <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };

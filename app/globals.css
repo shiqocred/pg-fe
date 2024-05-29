@@ -178,13 +178,20 @@ body {
   src: url("/fonts/Revans-Medium.ttf") format("truetype");
 }
 
-.swiper {
+#supervisor.swiper {
   width: 100%;
   height: 190px;
 }
+#poster.swiper {
+  width: 100%;
+  height: 250px;
+}
 
-.swiper-wrapper {
+#supervisor .swiper-wrapper {
   height: 144px !important;
+}
+#poster .swiper-wrapper {
+  height: 203px !important;
 }
 
 .swiper-slide {

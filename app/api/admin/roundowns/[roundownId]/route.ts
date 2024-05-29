@@ -33,11 +33,13 @@ export async function PATCH(
         return new NextResponse("Roundown id is require", { status: 400 });
       }
 
-      const currentPath = path.join(
-        process.cwd() + "/public" + existingFile.imageUrl
-      );
+      if (existingFile.imageUrl) {
+        const currentPath = path.join(
+          process.cwd() + "/public" + existingFile.imageUrl
+        );
 
-      await unlink(currentPath);
+        await unlink(currentPath);
+      }
 
       const pathen = path.join(process.cwd() + "/public/images/roundowns");
 

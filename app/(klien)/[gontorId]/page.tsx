@@ -60,14 +60,15 @@ const performanceMap = [
 ];
 
 const GontorIdPage = () => {
-  const swiperRef = useRef<SwiperType>();
+  const swiperRef1 = useRef<SwiperType>();
+  const swiperRef2 = useRef<SwiperType>();
   const [isBTSOpen, setIsBTSOpen] = useState(false);
   const params = useParams();
   const router = useRouter();
   const [isPerformance, setIsPerformance] = useState<number>(1);
   return (
     <main className="bg-[#EBF0E5] font-revans w-screen h-auto relative">
-      <Navbar />
+      <Navbar isGontor />
       <section className="w-full aspect-square object-cover overflow-hidden -mt-16 relative">
         <Image
           className="pointer-events-none object-cover"
@@ -288,6 +289,66 @@ const GontorIdPage = () => {
         </div>
       </section>
       <section className="flex w-full py-10 px-3 border-b border-[#7B897F] flex-col gap-2 h-full">
+        <div className="text-center w-full mb-4">
+          <h3 className="text-lg">POSTERS</h3>
+          <p className="text-xs">Imagine the news</p>
+        </div>
+        <Swiper
+          modules={[Autoplay]}
+          spaceBetween={8}
+          centeredSlides={true}
+          slidesPerView={"auto"}
+          loop={true}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          onSwiper={(swiper) => {
+            swiperRef1.current = swiper;
+          }}
+          className="mySwiper"
+          id="poster"
+        >
+          <div className="flex gap-2 mt-2">
+            <Button
+              className="w-8 h-8 p-0"
+              onClick={() => swiperRef1.current?.slidePrev()}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <Button
+              className="w-8 h-8 p-0"
+              onClick={() => swiperRef1.current?.slideNext()}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+          {Array.from({ length: 10 }, (_, i) => (
+            <SwiperSlide key={i}>
+              <Link href="#">
+                <Card className="flex items-center w-full justify-center shadow-none relative flex-col h-full bg-transparent">
+                  <div className="relative w-full aspect-[70/99] rounded-md overflow-hidden">
+                    <div className="h-9 overflow-hidden bg-gradient-to-b from-black/0 to-black/80 absolute bottom-0 z-10 w-full text-white text-start font-avenir font-semibold flex px-2 py-1 gap-1">
+                      <h5 className="text-xs leading-tight line-clamp-2  overflow-hidden">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Sint, perspiciatis.
+                      </h5>
+                    </div>
+                    <Image
+                      src={"/images/supervisors/profile_1.webp"}
+                      alt=""
+                      fill
+                      className="object-cover pointer-events-none"
+                    />
+                  </div>
+                </Card>
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </section>
+      <section className="flex w-full py-10 px-3 border-b border-[#7B897F] flex-col gap-2 h-full">
         <div className="text-center w-full">
           <h3 className="text-lg">SUPERVISORS</h3>
           <p className="text-xs">
@@ -347,20 +408,21 @@ const GontorIdPage = () => {
             pauseOnMouseEnter: true,
           }}
           onSwiper={(swiper) => {
-            swiperRef.current = swiper;
+            swiperRef2.current = swiper;
           }}
           className="mySwiper"
+          id="supervisor"
         >
           <div className="flex gap-2 mt-2">
             <Button
               className="w-8 h-8 p-0"
-              onClick={() => swiperRef.current?.slidePrev()}
+              onClick={() => swiperRef2.current?.slidePrev()}
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
             <Button
               className="w-8 h-8 p-0"
-              onClick={() => swiperRef.current?.slideNext()}
+              onClick={() => swiperRef2.current?.slideNext()}
             >
               <ChevronRight className="w-4 h-4" />
             </Button>

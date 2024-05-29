@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { mkdir, readdir, writeFile, unlink } from "fs/promises";
 import path from "path";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export async function PATCH(
   req: Request,
@@ -18,7 +19,6 @@ export async function PATCH(
     const data = await req.formData();
     const file: File | null = data.get("posterUrl") as unknown as File;
     const title: string = data.get("title") as unknown as string;
-    const description: string = data.get("description") as unknown as string;
     const category: string = data.get("category") as unknown as string;
     const isPublish: string = data.get("isPublish") as unknown as string;
 
@@ -66,10 +66,8 @@ export async function PATCH(
         },
         data: {
           title: title,
-          description: description,
           posterUrl: pathname,
           categoryId: category,
-          profileId: userId,
           isPublish: isPublish === "true",
         },
       });
@@ -80,9 +78,7 @@ export async function PATCH(
         },
         data: {
           title: title,
-          description: description,
           categoryId: category,
-          profileId: userId,
           isPublish: isPublish === "true",
         },
       });

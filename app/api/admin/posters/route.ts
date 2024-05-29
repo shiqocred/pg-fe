@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { mkdir, readdir, writeFile } from "fs/promises";
 import path from "path";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export async function POST(req: Request) {
   try {
@@ -12,12 +13,14 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const isAdmin = await getIsAdmin(userId);
+
     const data = await req.formData();
     const file: File | null = data.get("posterUrl") as unknown as File;
     const title: string = data.get("title") as unknown as string;
-    const description: string = data.get("description") as unknown as string;
     const category: string = data.get("category") as unknown as string;
     const isPublish: string = data.get("isPublish") as unknown as string;
+    const profileId: string = data.get("profileId") as unknown as string;
 
     if (!file) {
       return NextResponse.json({ success: false });
@@ -44,16 +47,27 @@ export async function POST(req: Request) {
 
     await writeFile(`${pathen}/${nameFile}`, buffer);
 
-    await db.poster.create({
-      data: {
-        title: title,
-        description: description,
-        posterUrl: pathname,
-        categoryId: category,
-        profileId: userId,
-        isPublish: isPublish === "true",
-      },
-    });
+    if (isAdmin) {
+      await db.poster.create({
+        data: {
+          title: title,
+          posterUrl: pathname,
+          categoryId: category,
+          profileId: profileId,
+          isPublish: isPublish === "true",
+        },
+      });
+    } else {
+      await db.poster.create({
+        data: {
+          title: title,
+          posterUrl: pathname,
+          categoryId: category,
+          profileId: userId,
+          isPublish: isPublish === "true",
+        },
+      });
+    }
 
     return NextResponse.json("Poster added success", {
       status: 200,

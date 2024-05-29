@@ -15,7 +15,7 @@ const BTSVideosPage = () => {
   const [isBTSOpen, setIsBTSOpen] = useState(false);
   return (
     <main className="bg-[#EBF0E5] font-revans w-screen min-h-screen h-auto relative">
-      <Navbar />
+      <Navbar isGontor />
       <section className="w-full h-full object-cover overflow-hidden relative px-4 pt-5 font-avenir font-normal text-justify gap-4 flex flex-col pb-10">
         <div className="flex items-center">
           <Link href={`/${params.gontorId}`} className="mr-2">

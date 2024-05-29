@@ -54,10 +54,10 @@ const LoginPage = () => {
     }
   };
   return (
-    <div className="flex justify-center items-center h-full">
+    <div className="flex justify-center items-center h-full px-3">
       <div className="max-w-2xl w-full">
         <div className="h-full text-center mb-3">
-          <h3 className="text-3xl font-bold">LOGIN</h3>
+          <h3 className="text-3xl font-bold">LOGIN ADMIN</h3>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">

@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { mkdir, readdir, writeFile } from "fs/promises";
 import path from "path";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export async function POST(req: Request) {
   try {
@@ -12,9 +13,12 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const isAdmin = await getIsAdmin(userId);
+
     const data = await req.formData();
     const file: File | null = data.get("imageUrl") as unknown as File;
     const title: string = data.get("title") as unknown as string;
+    const profileId: string = data.get("profileId") as unknown as string;
 
     const lastAcara = await db.roundown.findFirst({
       where: {
@@ -62,14 +66,25 @@ export async function POST(req: Request) {
 
     await writeFile(`${pathen}/${nameFile}`, buffer);
 
-    await db.roundown.create({
-      data: {
-        title: title,
-        imageUrl: pathname,
-        position: newPosition,
-        profileId: userId,
-      },
-    });
+    if (isAdmin) {
+      await db.roundown.create({
+        data: {
+          title: title,
+          imageUrl: pathname,
+          position: newPosition,
+          profileId: profileId,
+        },
+      });
+    } else {
+      await db.roundown.create({
+        data: {
+          title: title,
+          imageUrl: pathname,
+          position: newPosition,
+          profileId: userId,
+        },
+      });
+    }
 
     return NextResponse.json("Roundown added success", {
       status: 200,
