@@ -30,6 +30,7 @@ import { useModal } from "@/hooks/use-modal";
 import { useCookies } from "next-client-cookies";
 import { db } from "@/lib/db";
 import { getProfileIdFromCabang } from "@/actions/get-profile-id-from-cabang";
+import axios from "axios";
 
 interface initialData {
   heroUrl: string | null | undefined;
@@ -79,19 +80,26 @@ export const VideoTable = ({
     }
   };
 
-  const getHeroImage = async () => {
-    const profileId = await getProfileIdFromCabang(cabang);
+  const handleGetProfileId = async (data: $Enums.CabangRole) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/id/${data}`);
+      return res.data.profileId.id;
+    } catch (error) {
+      console.log("[ERROR_GET_PROFILEID]", error);
+    }
+  };
 
-    const heroRes = await getHero(isAdmin && profileId ? profileId.id : userId);
+  const getHeroImage = async () => {
+    const profileId: string = await handleGetProfileId(cabang);
+
+    const heroRes = await getHero(isAdmin ? profileId : userId);
 
     setUrlImage(heroRes?.heroUrl ?? "");
   };
   const getPhotosRes = async () => {
-    const profileId = await getProfileIdFromCabang(cabang);
+    const profileId: string = await handleGetProfileId(cabang);
 
-    const photoRes = await getPhotos(
-      isAdmin && profileId ? profileId.id : userId
-    );
+    const photoRes = await getPhotos(isAdmin ? profileId : userId);
 
     setUrlPhotos(photoRes);
   };

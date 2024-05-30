@@ -31,7 +31,7 @@ import { mapCabang } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useCookies } from "next-client-cookies";
 import { db } from "@/lib/db";
-import { getProfileIdFromCabang } from "@/actions/get-profile-id-from-cabang";
+import axios from "axios";
 
 export interface InfoProps {
   id: string;
@@ -77,29 +77,34 @@ export const Client = ({
 
   const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
-  const getRoundownsRes = async () => {
-    const profileId = await getProfileIdFromCabang(cabang);
+  const handleGetProfileId = async (data: $Enums.CabangRole) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/id/${data}`);
+      return res.data.profileId.id;
+    } catch (error) {
+      console.log("[ERROR_GET_PROFILEID]", error);
+    }
+  };
 
-    const roundownsRes = await getRoundowns(
-      isAdmin && profileId ? profileId.id : userId
-    );
+  const getRoundownsRes = async () => {
+    const profileId = await handleGetProfileId(cabang);
+
+    const roundownsRes = await getRoundowns(isAdmin ? profileId : userId);
 
     setIdProfile(profileId?.id ?? "");
     setroundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
-    const profileId = await getProfileIdFromCabang(cabang);
+    const profileId = await handleGetProfileId(cabang);
 
-    const faqsRes = await getFaqs(isAdmin && profileId ? profileId.id : userId);
+    const faqsRes = await getFaqs(isAdmin ? profileId : userId);
 
     setFaqs(faqsRes);
   };
   const getInformation = async () => {
-    const profileId = await getProfileIdFromCabang(cabang);
+    const profileId = await handleGetProfileId(cabang);
 
-    const infoRes = await getProfile(
-      isAdmin && profileId ? profileId.id : userId
-    );
+    const infoRes = await getProfile(isAdmin ? profileId : userId);
 
     setInformation(infoRes);
   };
