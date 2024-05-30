@@ -43,18 +43,25 @@ export const UploadForm = ({
 
   const router = useRouter();
 
-  const [cabang, setCabang] = useState<string>("PUTRA1");
+  const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
   const [idProfile, setIdProfile] = useState("");
 
   const [input, setInput] = useState<FileList | null>(null);
 
-  const getPhotosRes = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
-    });
+  const handleGetProfileId = async (data: $Enums.CabangRole) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/id/${data}`);
+      return res.data.profileId.id;
+    } catch (error) {
+      console.log("[ERROR_GET_PROFILEID]", error);
+    }
+  };
 
-    setIdProfile(profileId ?? "");
+  const getPhotosRes = async () => {
+    const profileId: string = await handleGetProfileId(cabang);
+
+    setIdProfile(profileId);
   };
 
   const handleSubmit = (e: FormEvent) => {

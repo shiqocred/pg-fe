@@ -41,21 +41,37 @@ export const PosterForm = ({
   const [imageUrl, setImageUrl] = useState("");
   const router = useRouter();
 
-  const [cabang, setCabang] = useState<string>("PUTRA1");
+  const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
   const [idProfile, setIdProfile] = useState("");
 
   const [input, setInput] = useState<FileList | null>(null);
 
+  const handleGetProfileId = async (data: $Enums.CabangRole) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/id/${data}`);
+      return res.data.profileId.id;
+    } catch (error) {
+      console.log("[ERROR_GET_PROFILEID]", error);
+    }
+  };
+
+  const handleGetHero = async (data: string) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/hero/${data}`);
+      return res.data.heroUrl.heroUrl;
+    } catch (error) {
+      console.log("[ERROR_GET_HERO_URL]", error);
+    }
+  };
+
   const getHeroImage = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
-    });
+    const profileId = await handleGetProfileId(cabang);
 
-    const heroRes = await getHero(isAdmin ? profileId ?? "" : userId);
+    const heroRes: string = await handleGetHero(isAdmin ? profileId : userId);
 
-    setIdProfile(profileId ?? "");
-    setImageUrl(heroRes?.heroUrl ?? "");
+    setIdProfile(profileId);
+    setImageUrl(heroRes);
   };
 
   const handleSubmit = async (e: FormEvent) => {

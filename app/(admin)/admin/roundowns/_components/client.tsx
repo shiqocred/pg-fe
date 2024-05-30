@@ -118,7 +118,7 @@ export const Client = ({
       isAdmin ? profileId : userId
     );
 
-    setIdProfile(profileId);
+    setIdProfile(isAdmin ? profileId : userId);
     setroundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
