@@ -80,6 +80,7 @@ export const PosterForm = ({
     if (input) {
       body.append("heroUrl", input[0]);
     }
+    body.append("profileId", idProfile);
     try {
       axios.patch("/api/admin/profile/hero", body);
       toast.success("Gambar berhasil diperbarui");

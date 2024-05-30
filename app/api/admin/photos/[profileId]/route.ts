@@ -20,7 +20,7 @@ export async function GET(
 
     const photos = await db.photo.findMany({
       where: {
-        id: params.profileId,
+        profileId: params.profileId,
       },
       select: {
         id: true,

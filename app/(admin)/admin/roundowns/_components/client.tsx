@@ -71,6 +71,8 @@ export const Client = ({
   const [information, setInformation] = useState<InfoProps | null>(null);
   const [idProfile, setIdProfile] = useState("");
 
+  console.log(faqs);
+
   const cookies = useCookies();
   const updated = cookies.get("updated");
 
@@ -96,7 +98,7 @@ export const Client = ({
 
   const handleGetFaqs = async (data: string) => {
     try {
-      const res = await axios.get(`/api/admin/roundowns/profile/${data}`);
+      const res = await axios.get(`/api/admin/faqs/profile/${data}`);
       return res.data.faqs;
     } catch (error) {
       console.log("[ERROR_GET_FAQS]", error);

@@ -38,7 +38,7 @@ export const TimeForm = ({
   information: InfoProps | null;
 }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const [tempat, setTempat] = useState(information?.tempat ?? "");
+  const [tempat, setTempat] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const router = useRouter();
   const [jam, setJam] = useState("00");
@@ -99,6 +99,11 @@ export const TimeForm = ({
       );
     } else {
       setInfo(new Date());
+    }
+    if (information?.tempat) {
+      setTempat(information?.tempat);
+    } else {
+      setTempat("");
     }
   }, [information]);
 
