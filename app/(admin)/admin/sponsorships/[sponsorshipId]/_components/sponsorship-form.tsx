@@ -65,10 +65,10 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
   const params = useParams();
   const router = useRouter();
 
-  const title = initialData
+  const title = initialData.id
     ? "Edit Sponsorship Form"
     : "Create Sponsorship Form";
-  const label = initialData ? "Edit" : "Create";
+  const label = initialData.id ? "Edit" : "Create";
 
   const urlImage = initialData?.imageUrl ?? "";
 
@@ -103,7 +103,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
       body.append("position", input.position);
       body.append("href", input.href);
 
-      if (!initialData) {
+      if (!initialData.id) {
         // add
         axios
           .post("/api/admin/sponsorships", body)

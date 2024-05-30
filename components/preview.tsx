@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import "react-quill/dist/quill.bubble.css";
 
 interface PreviewProps {
@@ -15,7 +15,9 @@ const Preview = ({ value }: PreviewProps) => {
 
   return (
     <div className="">
-      <ReactQuill theme="bubble" value={value} readOnly />
+      <Suspense fallback={"Loading..."}>
+        <ReactQuill theme="bubble" value={value} readOnly />
+      </Suspense>
     </div>
   );
 };

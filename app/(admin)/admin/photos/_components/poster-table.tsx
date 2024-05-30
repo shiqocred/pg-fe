@@ -28,6 +28,7 @@ import { cn, mapCabang } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useModal } from "@/hooks/use-modal";
 import { useCookies } from "next-client-cookies";
+import { db } from "@/lib/db";
 
 interface initialData {
   heroUrl: string | null | undefined;
@@ -57,7 +58,7 @@ export const VideoTable = ({
     }[]
   >([]);
 
-  const [cabang, setCabang] = useState<string>("PUTRA1");
+  const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
   const [destroyIds, setDestroyIds] = useState<string[]>([]);
 
@@ -78,20 +79,32 @@ export const VideoTable = ({
   };
 
   const getHeroImage = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
+    const profileId = await db.profile.findFirst({
+      where: {
+        cabang: cabang,
+      },
+      select: {
+        id: true,
+      },
     });
 
-    const heroRes = await getHero(isAdmin ? profileId ?? "" : userId);
+    const heroRes = await getHero(isAdmin && profileId ? profileId.id : userId);
 
     setUrlImage(heroRes?.heroUrl ?? "");
   };
   const getPhotosRes = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
+    const profileId = await db.profile.findFirst({
+      where: {
+        cabang: cabang,
+      },
+      select: {
+        id: true,
+      },
     });
 
-    const photoRes = await getPhotos(isAdmin ? profileId ?? "" : userId);
+    const photoRes = await getPhotos(
+      isAdmin && profileId ? profileId.id : userId
+    );
 
     setUrlPhotos(photoRes);
   };
@@ -106,7 +119,7 @@ export const VideoTable = ({
     if (destroyIds.length === urlPhotos.length) {
       setIsAll("all");
     }
-  }, [destroyIds, urlPhotos]);
+  }, [destroyIds, urlPhotos.length]);
 
   useEffect(() => {
     getHeroImage();

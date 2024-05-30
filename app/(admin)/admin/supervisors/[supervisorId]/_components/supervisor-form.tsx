@@ -66,8 +66,10 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
   const params = useParams();
   const router = useRouter();
 
-  const title = initialData ? "Edit Supervisor Form" : "Create Supervisor Form";
-  const label = initialData ? "Edit" : "Create";
+  const title = initialData.id
+    ? "Edit Supervisor Form"
+    : "Create Supervisor Form";
+  const label = initialData.id ? "Edit" : "Create";
 
   const urlImage = initialData?.imageUrl ?? "";
 
@@ -100,7 +102,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
       body.append("position", input.position);
       body.append("profileId", input.cabang);
 
-      if (!initialData) {
+      if (!initialData.id) {
         // add
         axios
           .post("/api/admin/supervisors", body)

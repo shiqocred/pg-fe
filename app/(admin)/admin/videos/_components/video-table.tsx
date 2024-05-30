@@ -93,6 +93,8 @@ export const VideoTable = ({ data }: { data: VideoColumnsProps[] }) => {
                       <iframe
                         src={`https://www.youtube.com/embed/${item.videoUrl}?vq=hd1080&modestbranding=1&rel=0&hl=id-ID`}
                         className="w-full aspect-video rounded-md"
+                        allow="encrypted-media"
+                        allowFullScreen
                         title={item.title}
                       />
                     </DialogContent>
@@ -173,6 +175,7 @@ export const VideoTable = ({ data }: { data: VideoColumnsProps[] }) => {
           </div>
         </div>
       )}
+      <script async src="//jsfiddle.net/srq643t9/21/embed/"></script>
     </div>
   );
 };

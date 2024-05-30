@@ -147,7 +147,9 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
   };
 
   useEffect(() => {
-    setIsMounted(true);
+    if (!isMounted) {
+      setIsMounted(true);
+    }
   }, []);
 
   if (!isMounted) {

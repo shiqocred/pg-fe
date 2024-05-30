@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format as formatDateFns } from "date-fns";
 import { id as indonesia } from "date-fns/locale";
+import { $Enums } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -18,42 +19,42 @@ export const formatTanggal = (tanggal: string) => {
 export const mapCabang = [
   {
     label: "gontor-1",
-    value: "PUTRA1",
+    value: $Enums.CabangRole.PUTRA1,
   },
   {
     label: "gontor-3",
-    value: "PUTRA3",
+    value: $Enums.CabangRole.PUTRA3,
   },
   {
     label: "gontor-4",
-    value: "PUTRA4",
+    value: $Enums.CabangRole.PUTRA4,
   },
   {
     label: "gontor-5",
-    value: "PUTRA5",
+    value: $Enums.CabangRole.PUTRA5,
   },
   {
     label: "gontor-6",
-    value: "PUTRA6",
+    value: $Enums.CabangRole.PUTRA6,
   },
   {
     label: "gontor-7",
-    value: "PUTRA7",
+    value: $Enums.CabangRole.PUTRA7,
   },
   {
     label: "gontor-putri-1",
-    value: "PUTRI1",
+    value: $Enums.CabangRole.PUTRI1,
   },
   {
     label: "gontor-putri-3",
-    value: "PUTRI3",
+    value: $Enums.CabangRole.PUTRI3,
   },
   {
     label: "gontor-putri-4",
-    value: "PUTRI4",
+    value: $Enums.CabangRole.PUTRI4,
   },
   {
     label: "gontor-putri-7",
-    value: "PUTRI7",
+    value: $Enums.CabangRole.PUTRI7,
   },
 ];

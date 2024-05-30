@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { mapCabang } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useCookies } from "next-client-cookies";
+import { db } from "@/lib/db";
 
 export interface InfoProps {
   id: string;
@@ -73,33 +74,52 @@ export const Client = ({
   const cookies = useCookies();
   const updated = cookies.get("updated");
 
-  const [cabang, setCabang] = useState<string>("PUTRA1");
+  const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
   const getRoundownsRes = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
+    const profileId = await db.profile.findFirst({
+      where: {
+        cabang: cabang,
+      },
+      select: {
+        id: true,
+      },
     });
 
-    const roundownsRes = await getRoundowns(isAdmin ? profileId ?? "" : userId);
+    const roundownsRes = await getRoundowns(
+      isAdmin && profileId ? profileId.id : userId
+    );
 
-    setIdProfile(profileId ?? "");
+    setIdProfile(profileId?.id ?? "");
     setroundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
+    const profileId = await db.profile.findFirst({
+      where: {
+        cabang: cabang,
+      },
+      select: {
+        id: true,
+      },
     });
 
-    const faqsRes = await getFaqs(isAdmin ? profileId ?? "" : userId);
+    const faqsRes = await getFaqs(isAdmin && profileId ? profileId.id : userId);
 
     setFaqs(faqsRes);
   };
   const getInformation = async () => {
-    const profileId = await getProfiles().then((res) => {
-      return res.find((item) => item.cabang === cabang)?.id;
+    const profileId = await db.profile.findFirst({
+      where: {
+        cabang: cabang,
+      },
+      select: {
+        id: true,
+      },
     });
 
-    const infoRes = await getProfile(isAdmin ? profileId ?? "" : userId);
+    const infoRes = await getProfile(
+      isAdmin && profileId ? profileId.id : userId
+    );
 
     setInformation(infoRes);
   };
