@@ -29,6 +29,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useModal } from "@/hooks/use-modal";
 import { useCookies } from "next-client-cookies";
 import { db } from "@/lib/db";
+import { getProfileIdFromCabang } from "@/actions/get-profile-id-from-cabang";
 
 interface initialData {
   heroUrl: string | null | undefined;
@@ -79,28 +80,14 @@ export const VideoTable = ({
   };
 
   const getHeroImage = async () => {
-    const profileId = await db.profile.findFirst({
-      where: {
-        cabang: cabang,
-      },
-      select: {
-        id: true,
-      },
-    });
+    const profileId = await getProfileIdFromCabang(cabang);
 
     const heroRes = await getHero(isAdmin && profileId ? profileId.id : userId);
 
     setUrlImage(heroRes?.heroUrl ?? "");
   };
   const getPhotosRes = async () => {
-    const profileId = await db.profile.findFirst({
-      where: {
-        cabang: cabang,
-      },
-      select: {
-        id: true,
-      },
-    });
+    const profileId = await getProfileIdFromCabang(cabang);
 
     const photoRes = await getPhotos(
       isAdmin && profileId ? profileId.id : userId

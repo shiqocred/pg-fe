@@ -31,6 +31,7 @@ import { mapCabang } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { useCookies } from "next-client-cookies";
 import { db } from "@/lib/db";
+import { getProfileIdFromCabang } from "@/actions/get-profile-id-from-cabang";
 
 export interface InfoProps {
   id: string;
@@ -77,14 +78,7 @@ export const Client = ({
   const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
   const getRoundownsRes = async () => {
-    const profileId = await db.profile.findFirst({
-      where: {
-        cabang: cabang,
-      },
-      select: {
-        id: true,
-      },
-    });
+    const profileId = await getProfileIdFromCabang(cabang);
 
     const roundownsRes = await getRoundowns(
       isAdmin && profileId ? profileId.id : userId
@@ -94,28 +88,14 @@ export const Client = ({
     setroundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
-    const profileId = await db.profile.findFirst({
-      where: {
-        cabang: cabang,
-      },
-      select: {
-        id: true,
-      },
-    });
+    const profileId = await getProfileIdFromCabang(cabang);
 
     const faqsRes = await getFaqs(isAdmin && profileId ? profileId.id : userId);
 
     setFaqs(faqsRes);
   };
   const getInformation = async () => {
-    const profileId = await db.profile.findFirst({
-      where: {
-        cabang: cabang,
-      },
-      select: {
-        id: true,
-      },
-    });
+    const profileId = await getProfileIdFromCabang(cabang);
 
     const infoRes = await getProfile(
       isAdmin && profileId ? profileId.id : userId
