@@ -37,6 +37,11 @@ interface initialData {
   photos: (string | null)[];
 }
 
+interface UrlPhotos {
+  id: string;
+  imageUrl: string | null;
+}
+
 export const VideoTable = ({
   userId,
   isAdmin,
@@ -49,16 +54,7 @@ export const VideoTable = ({
   const cookies = useCookies();
 
   const [urlImage, setUrlImage] = useState("");
-  const [urlPhotos, setUrlPhotos] = useState<
-    {
-      profile: {
-        id: string;
-        cabang: $Enums.CabangRole;
-      };
-      id: string;
-      imageUrl: string | null;
-    }[]
-  >([]);
+  const [urlPhotos, setUrlPhotos] = useState<UrlPhotos[]>([]);
 
   const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
@@ -88,18 +84,36 @@ export const VideoTable = ({
       console.log("[ERROR_GET_PROFILEID]", error);
     }
   };
+  const handleGetHero = async (data: string) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/hero/${data}`);
+      return res.data.heroUrl.heroUrl;
+    } catch (error) {
+      console.log("[ERROR_GET_HERO_URL]", error);
+    }
+  };
+  const handleGetPhotos = async (data: string) => {
+    try {
+      const res = await axios.get(`/api/admin/photos/${data}`);
+      return res.data.photos;
+    } catch (error) {
+      console.log("[ERROR_GET_PHOTOS]", error);
+    }
+  };
 
   const getHeroImage = async () => {
     const profileId: string = await handleGetProfileId(cabang);
 
-    const heroRes = await getHero(isAdmin ? profileId : userId);
+    const heroRes: string = await handleGetHero(isAdmin ? profileId : userId);
 
-    setUrlImage(heroRes?.heroUrl ?? "");
+    setUrlImage(heroRes);
   };
   const getPhotosRes = async () => {
     const profileId: string = await handleGetProfileId(cabang);
 
-    const photoRes = await getPhotos(isAdmin ? profileId : userId);
+    const photoRes: UrlPhotos[] = await handleGetPhotos(
+      isAdmin ? profileId : userId
+    );
 
     setUrlPhotos(photoRes);
   };

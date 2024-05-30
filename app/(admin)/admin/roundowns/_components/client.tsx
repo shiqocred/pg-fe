@@ -38,24 +38,23 @@ export interface InfoProps {
   waktu: string | null;
   tanggal: string | null;
   tempat: string | null;
-  cabang: $Enums.CabangRole;
 }
 
 export interface RoundownsProps {
   profile: {
-    id: string;
     cabang: $Enums.CabangRole;
+    id: string;
   };
   id: string;
+  position: number;
   title: string;
   imageUrl: string | null;
-  position: number;
 }
 export interface FaqsProps {
   id: string;
-  position: number;
   question: string;
   answer: string;
+  position: number;
 }
 
 export const Client = ({
@@ -86,25 +85,57 @@ export const Client = ({
     }
   };
 
+  const handleGetRoundowns = async (data: string) => {
+    try {
+      const res = await axios.get(`/api/admin/roundowns/profile/${data}`);
+      return res.data.roundowns;
+    } catch (error) {
+      console.log("[ERROR_GET_ROUNDOWNS]", error);
+    }
+  };
+
+  const handleGetFaqs = async (data: string) => {
+    try {
+      const res = await axios.get(`/api/admin/roundowns/profile/${data}`);
+      return res.data.faqs;
+    } catch (error) {
+      console.log("[ERROR_GET_FAQS]", error);
+    }
+  };
+  const handleGetInformation = async (data: string) => {
+    try {
+      const res = await axios.get(`/api/admin/profile/info/${data}`);
+      return res.data.info;
+    } catch (error) {
+      console.log("[ERROR_GET_FAQS]", error);
+    }
+  };
+
   const getRoundownsRes = async () => {
-    const profileId = await handleGetProfileId(cabang);
+    const profileId: string = await handleGetProfileId(cabang);
 
-    const roundownsRes = await getRoundowns(isAdmin ? profileId : userId);
+    const roundownsRes: RoundownsProps[] = await handleGetRoundowns(
+      isAdmin ? profileId : userId
+    );
 
-    setIdProfile(profileId?.id ?? "");
+    setIdProfile(profileId);
     setroundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
     const profileId = await handleGetProfileId(cabang);
 
-    const faqsRes = await getFaqs(isAdmin ? profileId : userId);
+    const faqsRes: FaqsProps[] = await handleGetFaqs(
+      isAdmin ? profileId : userId
+    );
 
     setFaqs(faqsRes);
   };
   const getInformation = async () => {
     const profileId = await handleGetProfileId(cabang);
 
-    const infoRes = await getProfile(isAdmin ? profileId : userId);
+    const infoRes: InfoProps = await handleGetInformation(
+      isAdmin ? profileId : userId
+    );
 
     setInformation(infoRes);
   };
