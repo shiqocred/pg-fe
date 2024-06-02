@@ -47,15 +47,6 @@ export const PosterForm = ({
 
   const [input, setInput] = useState<FileList | null>(null);
 
-  const handleGetProfileId = async (data: $Enums.CabangRole) => {
-    try {
-      const res = await axios.get(`/api/admin/profile/id/${data}`);
-      return res.data.profileId.id;
-    } catch (error) {
-      console.log("[ERROR_GET_PROFILEID]", error);
-    }
-  };
-
   const handleGetHero = async (data: string) => {
     try {
       const res = await axios.get(`/api/admin/profile/hero/${data}`);
@@ -66,11 +57,9 @@ export const PosterForm = ({
   };
 
   const getHeroImage = async () => {
-    const profileId = await handleGetProfileId(cabang);
+    const heroRes: string = await handleGetHero(cabang);
 
-    const heroRes: string = await handleGetHero(isAdmin ? profileId : userId);
-
-    setIdProfile(profileId);
+    setIdProfile(cabang);
     setImageUrl(heroRes);
   };
 
@@ -80,7 +69,7 @@ export const PosterForm = ({
     if (input) {
       body.append("heroUrl", input[0]);
     }
-    body.append("profileId", idProfile);
+    body.append("cabang", idProfile);
     try {
       axios.patch("/api/admin/profile/hero", body);
       toast.success("Gambar berhasil diperbarui");

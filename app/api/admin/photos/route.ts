@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { mkdir, readdir, writeFile } from "fs/promises";
 import path from "path";
 import { getIsAdmin } from "@/actions/get-is-admin";
+import { $Enums } from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
@@ -17,10 +18,10 @@ export async function POST(req: Request) {
 
     const data = await req.formData();
     const files: File[] | null = data.getAll("imageUrl") as unknown as File[];
-    const profileId: string = data.get("profileId") as unknown as string;
+    const cabang: $Enums.CabangRole = data.get("cabang") as $Enums.CabangRole;
 
     if (!files) {
-      return NextResponse.json({ success: false });
+      return new NextResponse("No Images", { status: 500 });
     }
 
     const dataMap = files.map(async (file) => {
@@ -44,9 +45,17 @@ export async function POST(req: Request) {
       const pathname = `/images/photos/${nameFile}`;
 
       if (isAdmin) {
+        const profileId = await db.profile.findFirst({
+          where: {
+            cabang: cabang,
+          },
+          select: {
+            id: true,
+          },
+        });
         const dataStore = {
           imageUrl: pathname,
-          profileId: profileId,
+          profileId: profileId?.id ?? "",
         };
         return dataStore;
       } else {

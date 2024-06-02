@@ -76,14 +76,6 @@ export const VideoTable = ({
     }
   };
 
-  const handleGetProfileId = async (data: $Enums.CabangRole) => {
-    try {
-      const res = await axios.get(`/api/admin/profile/id/${data}`);
-      return res.data.profileId.id;
-    } catch (error) {
-      console.log("[ERROR_GET_PROFILEID]", error);
-    }
-  };
   const handleGetHero = async (data: string) => {
     try {
       const res = await axios.get(`/api/admin/profile/hero/${data}`);
@@ -102,18 +94,12 @@ export const VideoTable = ({
   };
 
   const getHeroImage = async () => {
-    const profileId: string = await handleGetProfileId(cabang);
-
-    const heroRes: string = await handleGetHero(isAdmin ? profileId : userId);
+    const heroRes: string = await handleGetHero(cabang);
 
     setUrlImage(heroRes);
   };
   const getPhotosRes = async () => {
-    const profileId: string = await handleGetProfileId(cabang);
-
-    const photoRes: UrlPhotos[] = await handleGetPhotos(
-      isAdmin ? profileId : userId
-    );
+    const photoRes: UrlPhotos[] = await handleGetPhotos(cabang);
 
     setUrlPhotos(photoRes);
   };

@@ -1,3 +1,4 @@
+import { getIsAdmin } from "@/actions/get-is-admin";
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { $Enums } from "@prisma/client";
@@ -5,7 +6,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { profileId: string } }
+  { params }: { params: { cabang: $Enums.CabangRole } }
 ) {
   try {
     const { userId } = await auth();
@@ -14,13 +15,35 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    if (!params.profileId) {
+    const isAdmin = await getIsAdmin(userId);
+
+    if (!params.cabang) {
       return new NextResponse("Profile id is required", { status: 400 });
     }
 
+    if (isAdmin) {
+      const info = await db.profile.findFirst({
+        where: {
+          cabang: params.cabang,
+        },
+        select: {
+          id: true,
+          waktu: true,
+          tanggal: true,
+          tempat: true,
+        },
+      });
+
+      return NextResponse.json(
+        { message: "Info is match", isAdmin: true, info: info },
+        {
+          status: 200,
+        }
+      );
+    }
     const info = await db.profile.findFirst({
       where: {
-        id: params.profileId,
+        id: userId,
       },
       select: {
         id: true,
@@ -31,7 +54,7 @@ export async function GET(
     });
 
     return NextResponse.json(
-      { message: "Info is match", info: info },
+      { message: "Info is match", isAdmin: false, info: info },
       {
         status: 200,
       }

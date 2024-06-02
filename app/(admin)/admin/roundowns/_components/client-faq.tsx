@@ -18,10 +18,10 @@ import { useModal } from "@/hooks/use-modal";
 
 export const ClientFaq = ({
   initialData,
-  profileId,
+  cabang,
 }: {
   initialData: FaqsProps[];
-  profileId: string;
+  cabang: string;
 }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -49,7 +49,7 @@ export const ClientFaq = ({
     const body = {
       question: input.question,
       answer: input.answer,
-      profileId: profileId,
+      cabang: cabang,
     };
     if (isEditing) {
       try {

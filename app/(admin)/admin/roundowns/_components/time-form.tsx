@@ -29,12 +29,13 @@ import { parse } from "date-fns";
 import { id as indonesia } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 import { useCookies } from "next-client-cookies";
+import { $Enums } from "@prisma/client";
 
 export const TimeForm = ({
   information,
-  profileId,
+  cabang,
 }: {
-  profileId: string;
+  cabang: $Enums.CabangRole;
   information: InfoProps | null;
 }) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -69,7 +70,7 @@ export const TimeForm = ({
       tanggal: triggerDate,
       waktu: triggerTime,
       tempat: tempat,
-      profileId: profileId,
+      cabang: cabang,
     };
     try {
       await axios.patch("/api/admin/profile/info", body);

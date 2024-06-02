@@ -18,10 +18,10 @@ import { useModal } from "@/hooks/use-modal";
 
 export const ClientRoundown = ({
   initialData,
-  profileId,
+  cabang,
 }: {
   initialData: RoundownsProps[];
-  profileId: string;
+  cabang: string;
 }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -75,7 +75,7 @@ export const ClientRoundown = ({
     e.preventDefault();
     const values = new FormData();
     values.append("title", input.title);
-    values.append("profileId", profileId);
+    values.append("cabang", cabang);
     if (input.imageUrl) {
       values.append("imageUrl", input.imageUrl[0]);
     }

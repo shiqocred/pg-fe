@@ -1,6 +1,7 @@
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
+import { $Enums } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function PATCH(req: Request) {
@@ -14,18 +15,33 @@ export async function PATCH(req: Request) {
     const isAdmin = await getIsAdmin(userId);
 
     const data = await req.json();
+    const cabang: $Enums.CabangRole = data.cabang;
 
     if (isAdmin) {
-      await db.profile.update({
+      const profileId = await db.profile.findFirst({
         where: {
-          id: data.profileId,
+          cabang: cabang,
         },
-        data: {
-          tanggal: data.tanggal,
-          waktu: data.waktu,
-          tempat: data.tempat,
+        select: {
+          id: true,
         },
       });
+      if (profileId?.id) {
+        await db.profile.update({
+          where: {
+            id: profileId.id,
+          },
+          data: {
+            tanggal: data.tanggal,
+            waktu: data.waktu,
+            tempat: data.tempat,
+          },
+        });
+
+        return NextResponse.json("Info added success", {
+          status: 200,
+        });
+      }
     } else {
       await db.profile.update({
         where: {
@@ -37,11 +53,11 @@ export async function PATCH(req: Request) {
           tempat: data.tempat,
         },
       });
-    }
 
-    return NextResponse.json("Info added success", {
-      status: 200,
-    });
+      return NextResponse.json("Info added success", {
+        status: 200,
+      });
+    }
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

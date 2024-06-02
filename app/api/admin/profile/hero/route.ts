@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { mkdir, readdir, unlink, writeFile } from "fs/promises";
 import path from "path";
 import { getIsAdmin } from "@/actions/get-is-admin";
+import { $Enums } from "@prisma/client";
 
 const mapCabang = [
   {
@@ -60,7 +61,7 @@ export async function PATCH(req: Request) {
 
     const data = await req.formData();
     const file: File | null = data.get("heroUrl") as unknown as File;
-    const profileId: string = data.get("profileId") as unknown as string;
+    const cabang: $Enums.CabangRole = data.get("cabang") as $Enums.CabangRole;
 
     if (!file) {
       return NextResponse.json({ success: false });
@@ -71,7 +72,7 @@ export async function PATCH(req: Request) {
 
     const existingFile = await db.profile.findFirst({
       where: {
-        id: userId,
+        cabang,
       },
     });
 
@@ -106,14 +107,27 @@ export async function PATCH(req: Request) {
     await writeFile(`${pathen}/${nameFile}`, buffer);
 
     if (isAdmin) {
-      await db.profile.update({
+      const profileId = await db.profile.findFirst({
         where: {
-          id: profileId,
+          cabang,
         },
-        data: {
-          heroUrl: pathname,
+        select: {
+          id: true,
         },
       });
+      if (profileId?.id) {
+        await db.profile.update({
+          where: {
+            id: profileId.id,
+          },
+          data: {
+            heroUrl: pathname,
+          },
+        });
+        return NextResponse.json("Hero Image added success", {
+          status: 200,
+        });
+      }
     } else {
       await db.profile.update({
         where: {
@@ -123,11 +137,10 @@ export async function PATCH(req: Request) {
           heroUrl: pathname,
         },
       });
+      return NextResponse.json("Hero Image added success", {
+        status: 200,
+      });
     }
-
-    return NextResponse.json("Hero Image added success", {
-      status: 200,
-    });
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

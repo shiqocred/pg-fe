@@ -69,27 +69,15 @@ export const Client = ({
   const [roundowns, setroundowns] = useState<RoundownsProps[]>([]);
   const [faqs, setFaqs] = useState<FaqsProps[]>([]);
   const [information, setInformation] = useState<InfoProps | null>(null);
-  const [idProfile, setIdProfile] = useState("");
-
-  console.log(faqs);
 
   const cookies = useCookies();
   const updated = cookies.get("updated");
 
   const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
-  const handleGetProfileId = async (data: $Enums.CabangRole) => {
-    try {
-      const res = await axios.get(`/api/admin/profile/id/${data}`);
-      return res.data.profileId.id;
-    } catch (error) {
-      console.log("[ERROR_GET_PROFILEID]", error);
-    }
-  };
-
   const handleGetRoundowns = async (data: string) => {
     try {
-      const res = await axios.get(`/api/admin/roundowns/profile/${data}`);
+      const res = await axios.get(`/api/admin/roundowns/cabang/${data}`);
       return res.data.roundowns;
     } catch (error) {
       console.log("[ERROR_GET_ROUNDOWNS]", error);
@@ -98,7 +86,7 @@ export const Client = ({
 
   const handleGetFaqs = async (data: string) => {
     try {
-      const res = await axios.get(`/api/admin/faqs/profile/${data}`);
+      const res = await axios.get(`/api/admin/faqs/cabang/${data}`);
       return res.data.faqs;
     } catch (error) {
       console.log("[ERROR_GET_FAQS]", error);
@@ -114,30 +102,17 @@ export const Client = ({
   };
 
   const getRoundownsRes = async () => {
-    const profileId: string = await handleGetProfileId(cabang);
+    const roundownsRes: RoundownsProps[] = await handleGetRoundowns(cabang);
 
-    const roundownsRes: RoundownsProps[] = await handleGetRoundowns(
-      isAdmin ? profileId : userId
-    );
-
-    setIdProfile(isAdmin ? profileId : userId);
     setroundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
-    const profileId = await handleGetProfileId(cabang);
-
-    const faqsRes: FaqsProps[] = await handleGetFaqs(
-      isAdmin ? profileId : userId
-    );
+    const faqsRes: FaqsProps[] = await handleGetFaqs(cabang);
 
     setFaqs(faqsRes);
   };
   const getInformation = async () => {
-    const profileId = await handleGetProfileId(cabang);
-
-    const infoRes: InfoProps = await handleGetInformation(
-      isAdmin ? profileId : userId
-    );
+    const infoRes: InfoProps = await handleGetInformation(cabang);
 
     setInformation(infoRes);
   };
@@ -210,14 +185,14 @@ export const Client = ({
           </DropdownMenu>
         </Card>
       )}
-      <TimeForm information={information} profileId={idProfile} />
+      <TimeForm information={information} cabang={cabang} />
       <Separator />
       <div className="flex gap-3 w-full flex-col md:flex-row">
         <div className="w-full">
-          <ClientFaq initialData={faqs} profileId={idProfile} />
+          <ClientFaq initialData={faqs} cabang={cabang} />
         </div>
         <div className="w-full">
-          <ClientRoundown initialData={roundowns} profileId={idProfile} />
+          <ClientRoundown initialData={roundowns} cabang={cabang} />
         </div>
       </div>
     </div>
