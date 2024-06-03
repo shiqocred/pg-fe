@@ -3,10 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
-const ReactQuill = dynamic(import("react-quill"), {
-  ssr: false,
-  loading: () => <p>Loading ...</p>,
-});
+import ReactQuill from "react-quill";
 
 interface PreviewProps {
   value: string;
