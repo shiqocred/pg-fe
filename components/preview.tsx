@@ -7,7 +7,7 @@ import "react-quill/dist/quill.bubble.css";
 let ReactQuill: ComponentType<ReactQuillProps> = () => null;
 
 try {
-  const ReactQuillDynamic = dynamic(() => import("react-quill"), {
+  const ReactQuillDynamic = dynamic(() => require("react-quill"), {
     ssr: false,
   });
   ReactQuill = ReactQuillDynamic;
