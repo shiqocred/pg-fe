@@ -1,19 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { ComponentType, Suspense, useEffect, useMemo, useState } from "react";
-import { ReactQuillProps } from "react-quill";
+import { useEffect, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
-let ReactQuill: ComponentType<ReactQuillProps> = () => null;
-
-try {
-  const ReactQuillDynamic = dynamic(() => require("react-quill"), {
-    ssr: false,
-  });
-  ReactQuill = ReactQuillDynamic;
-} catch (error) {
-  console.log(error);
-}
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
 
 interface PreviewProps {
   value: string;
