@@ -40,7 +40,7 @@ export async function middleware(request: NextRequest) {
       return response;
     }
 
-    const response = NextResponse.redirect(new URL(`/`, url));
+    const response = NextResponse.redirect(new URL(`/admin`, url));
     return response;
   }
 

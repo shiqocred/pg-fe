@@ -1,9 +1,19 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { ComponentType, useEffect, useState } from "react";
+import { ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+let ReactQuill: ComponentType<ReactQuillProps> = () => null;
+
+try {
+  const ReactQuillDynamic = dynamic(() => import("react-quill"), {
+    ssr: false,
+  });
+  ReactQuill = ReactQuillDynamic;
+} catch (error) {
+  console.log(error);
+}
 
 interface EditorProps {
   onChange: (value: string) => void;
