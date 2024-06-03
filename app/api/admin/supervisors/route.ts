@@ -130,10 +130,7 @@ export async function POST(req: Request) {
         data: {
           name: name,
           imageUrl: pathname,
-          position:
-            position === "Staff "
-              ? $Enums.PositionSupervisor.STAFF
-              : $Enums.PositionSupervisor.CHIEF,
+          position: position as any,
           profileId: profileId,
         },
       });
@@ -142,10 +139,7 @@ export async function POST(req: Request) {
         data: {
           name: name,
           imageUrl: pathname,
-          position:
-            position === "Staff "
-              ? $Enums.PositionSupervisor.STAFF
-              : $Enums.PositionSupervisor.CHIEF,
+          position: position as any,
           profileId: userId,
         },
       });

@@ -1,9 +1,6 @@
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { mkdir, readdir, writeFile, unlink } from "fs/promises";
-import path from "path";
-import { $Enums } from "@prisma/client";
 import { createFile } from "@/lib/create-file";
 import { deleteFile } from "@/lib/delete-file";
 
@@ -47,10 +44,7 @@ export async function PATCH(
         data: {
           name: name,
           imageUrl: pathname,
-          position:
-            position === "Staff "
-              ? $Enums.PositionSupervisor.STAFF
-              : $Enums.PositionSupervisor.CHIEF,
+          position: position as any,
         },
       });
     } else {
@@ -60,10 +54,7 @@ export async function PATCH(
         },
         data: {
           name: name,
-          position:
-            position === "Staff "
-              ? $Enums.PositionSupervisor.STAFF
-              : $Enums.PositionSupervisor.CHIEF,
+          position: position as any,
         },
       });
     }

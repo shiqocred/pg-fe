@@ -163,6 +163,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
                   setInput((prev) => ({ ...prev, imageUrl: e.target.files }))
                 }
                 name="imageUrl"
+                accept="image/*"
               />
             </div>
             <div className="flex flex-col gap-y-2 w-full">
@@ -189,7 +190,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
                     <DropdownMenuItem
-                      onClick={() =>
+                      onSelect={() =>
                         setInput((prev) => ({ ...prev, position: "STAFF" }))
                       }
                     >
@@ -202,7 +203,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
                       Staff
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() =>
+                      onSelect={() =>
                         setInput((prev) => ({ ...prev, position: "CHIEF" }))
                       }
                     >
@@ -241,23 +242,25 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      {initialData.cabang.map((item) => (
-                        <DropdownMenuItem
-                          key={item.id}
-                          onClick={() =>
-                            setInput((prev) => ({
-                              ...prev,
-                              cabang: item.id,
-                            }))
-                          }
-                          className="capitalize"
-                        >
-                          {mapCabang
-                            .find((i) => i.value === item.cabang)
-                            ?.label.split("-")
-                            .join(" ")}
-                        </DropdownMenuItem>
-                      ))}
+                      {initialData.cabang
+                        .slice(1, initialData.cabang.length)
+                        .map((item) => (
+                          <DropdownMenuItem
+                            key={item.id}
+                            onClick={() =>
+                              setInput((prev) => ({
+                                ...prev,
+                                cabang: item.id,
+                              }))
+                            }
+                            className="capitalize"
+                          >
+                            {mapCabang
+                              .find((i) => i.value === item.cabang)
+                              ?.label.split("-")
+                              .join(" ")}
+                          </DropdownMenuItem>
+                        ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

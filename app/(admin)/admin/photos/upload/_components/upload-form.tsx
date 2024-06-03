@@ -45,24 +45,7 @@ export const UploadForm = ({
 
   const [cabang, setCabang] = useState<$Enums.CabangRole>("PUTRA1");
 
-  const [idProfile, setIdProfile] = useState("");
-
   const [input, setInput] = useState<FileList | null>(null);
-
-  const handleGetProfileId = async (data: $Enums.CabangRole) => {
-    try {
-      const res = await axios.get(`/api/admin/profile/id/${data}`);
-      return res.data.profileId.id;
-    } catch (error) {
-      console.log("[ERROR_GET_PROFILEID]", error);
-    }
-  };
-
-  const getPhotosRes = async () => {
-    const profileId: string = await handleGetProfileId(cabang);
-
-    setIdProfile(profileId);
-  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -73,7 +56,7 @@ export const UploadForm = ({
         body.append("imageUrl", input[i]);
       });
     }
-    body.append("profileId", idProfile);
+    body.append("cabang", cabang);
 
     try {
       axios.post("/api/admin/photos", body);
@@ -86,11 +69,6 @@ export const UploadForm = ({
   };
 
   useEffect(() => {
-    getPhotosRes();
-  }, [cabang]);
-
-  useEffect(() => {
-    getPhotosRes();
     setIsMounted(true);
   }, []);
 
@@ -130,7 +108,7 @@ export const UploadForm = ({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    {mapCabang.map((item) => (
+                    {mapCabang.slice(0, mapCabang.length).map((item) => (
                       <DropdownMenuItem
                         key={item.value}
                         onClick={() => setCabang(item.value)}
@@ -155,6 +133,7 @@ export const UploadForm = ({
                     multiple
                     onChange={(e) => setInput(e.target.files)}
                     name="posterUrl"
+                    accept="image/*"
                   />
                 </div>
               )
@@ -166,6 +145,7 @@ export const UploadForm = ({
                   multiple
                   onChange={(e) => setInput(e.target.files)}
                   name="posterUrl"
+                  accept="image/*"
                 />
               </div>
             )}

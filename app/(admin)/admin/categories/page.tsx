@@ -26,15 +26,6 @@ const CategoriesPage = async () => {
 
   if (!isAdmin) return redirect("/admin/dashboard");
 
-  const categories = await getCategories();
-
-  const formatedCategories: CategoryColumnsProps[] = categories.map((item) => ({
-    id: item.id,
-    name: item.name,
-    owner: item.profileId === userId,
-    branch: item.profile.cabang ?? "",
-  }));
-
   return (
     <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
       <Header title="Categories Page" description="Resize with tags" />
@@ -51,7 +42,7 @@ const CategoriesPage = async () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <CategoryTable data={formatedCategories} />
+      <CategoryTable />
     </div>
   );
 };
