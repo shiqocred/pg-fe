@@ -4,12 +4,16 @@ import dynamic from "next/dynamic";
 import { ComponentType, Suspense, useEffect, useMemo, useState } from "react";
 import { ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.bubble.css";
-const ReactQuill: ComponentType<ReactQuillProps> = dynamic(
-  () => require("react-quill"),
-  {
+let ReactQuill: ComponentType<ReactQuillProps> = () => null;
+
+try {
+  const ReactQuillDynamic = dynamic(() => require("react-quill"), {
     ssr: false,
-  }
-);
+  });
+  ReactQuill = ReactQuillDynamic;
+} catch (error) {
+  console.log(error);
+}
 
 interface PreviewProps {
   value: string;

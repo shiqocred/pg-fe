@@ -4,12 +4,16 @@ import dynamic from "next/dynamic";
 import { ComponentType, useEffect, useState } from "react";
 import { ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-const ReactQuill: ComponentType<ReactQuillProps> = dynamic(
-  () => require("react-quill"),
-  {
+let ReactQuill: ComponentType<ReactQuillProps> = () => null;
+
+try {
+  const ReactQuillDynamic = dynamic(() => require("react-quill"), {
     ssr: false,
-  }
-);
+  });
+  ReactQuill = ReactQuillDynamic;
+} catch (error) {
+  console.log(error);
+}
 
 interface EditorProps {
   onChange: (value: string) => void;
