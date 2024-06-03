@@ -18,6 +18,7 @@ import { mapCabang } from "@/lib/utils";
 import { $Enums } from "@prisma/client";
 import { formatDistanceStrict } from "date-fns";
 import { id as indonesia } from "date-fns/locale";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export interface BlogsColumnsProps {
   id: string;
@@ -32,7 +33,7 @@ export interface BlogsColumnsProps {
   isAdmin: boolean;
 }
 
-interface BlogsProps {
+export interface BlogsProps {
   profile: {
     id: string;
     cabang: $Enums.CabangRole;
@@ -56,31 +57,7 @@ const BlogsPage = async () => {
 
   if (!userId) return redirect("/login");
 
-  const blog: BlogsProps[] = await getBlogs(userId);
-
-  const formatedBlogs: BlogsColumnsProps[] = blog.map((item) => ({
-    id: item.id,
-    title: item.title,
-    category: item.category.name,
-    author: item.author,
-    cabang:
-      mapCabang
-        .find((i) => i.value === item.profile.cabang)
-        ?.label.split("-")
-        .join(" ") ?? item.profile.cabang,
-    highlight: item.highlight,
-    imageUrl: item.imageUrl,
-    date: formatDistanceStrict(
-      item.createdAt.toString(),
-      new Date().toString(),
-      {
-        addSuffix: true,
-        locale: indonesia,
-      }
-    ),
-    isPublish: item.isPublish,
-    isAdmin: item.admin,
-  }));
+  const isAdmin = await getIsAdmin(userId);
 
   return (
     <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
@@ -98,7 +75,7 @@ const BlogsPage = async () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <BlogTable data={formatedBlogs} />
+      <BlogTable isAdmin={isAdmin} />
     </div>
   );
 };

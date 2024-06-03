@@ -5,6 +5,7 @@ import { mkdir, readdir, writeFile } from "fs/promises";
 import path from "path";
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { $Enums } from "@prisma/client";
+import { createFile } from "@/lib/create-file";
 
 export async function POST(req: Request) {
   try {
@@ -63,26 +64,7 @@ export async function POST(req: Request) {
         );
       }
 
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      const pathen = path.join(process.cwd() + "/public/images/roundowns");
-
-      const nameFile = `${
-        Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-      }-${title.toLocaleLowerCase().split(" ").join("_")}.${
-        file.type.split("/")[1]
-      }`;
-
-      const pathname = `/images/roundowns/${nameFile}`;
-
-      try {
-        await readdir(pathen);
-      } catch (error) {
-        await mkdir(pathen);
-      }
-
-      await writeFile(`${pathen}/${nameFile}`, buffer);
+      const pathname = await createFile(file, title, "roundowns", false);
 
       await db.roundown.create({
         data: {

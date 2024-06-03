@@ -1,11 +1,7 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { auth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { SponsorClient } from "./_components/sponsor-client";
-import { getPosters } from "@/actions/get-posters";
-import { getSupervisors } from "@/actions/get-supervisors";
 import { $Enums } from "@prisma/client";
 import {
   Breadcrumb,
@@ -16,10 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Header } from "@/components/header";
-import { getSponsorships } from "@/actions/get-sponsorships";
-import { mapCabang } from "@/lib/utils";
-import { formatDistanceStrict } from "date-fns";
-import { id as indonesia } from "date-fns/locale";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export interface SponsorshipsProps {
   id: string;
@@ -29,7 +22,6 @@ export interface SponsorshipsProps {
   position: $Enums.SponsorEnum;
   cabang: string;
   date: string;
-  isAdmin: boolean;
 }
 export interface SponsorshipsResProps {
   id: string;
@@ -37,7 +29,6 @@ export interface SponsorshipsResProps {
   imageUrl: string | null;
   href: string | null;
   position: $Enums.SponsorEnum;
-  admin: boolean;
   createdAt: Date;
   profile: {
     id: string;
@@ -50,29 +41,7 @@ const PostersPage = async () => {
 
   if (!userId) return redirect("/login");
 
-  const sponsorships: SponsorshipsResProps[] = await getSponsorships(userId);
-
-  const formatedSupervisors: SponsorshipsProps[] = sponsorships.map((item) => ({
-    id: item.id,
-    name: item.name,
-    imageUrl: item.imageUrl,
-    href: item.href,
-    position: item.position,
-    cabang:
-      mapCabang
-        .find((i) => i.value === item.profile.cabang)
-        ?.label.split("-")
-        .join(" ") ?? item.profile.cabang,
-    date: formatDistanceStrict(
-      item.createdAt.toString(),
-      new Date().toString(),
-      {
-        addSuffix: true,
-        locale: indonesia,
-      }
-    ),
-    isAdmin: item.admin,
-  }));
+  const isAdmin = await getIsAdmin(userId);
 
   return (
     <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
@@ -93,7 +62,7 @@ const PostersPage = async () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <SponsorClient data={formatedSupervisors} />
+      <SponsorClient isAdmin={isAdmin} />
     </div>
   );
 };

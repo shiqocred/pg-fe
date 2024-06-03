@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { mkdir, readdir, writeFile, unlink } from "fs/promises";
 import path from "path";
 import { $Enums } from "@prisma/client";
+import { createFile } from "@/lib/create-file";
+import { deleteFile } from "@/lib/delete-file";
 
 export async function PATCH(
   req: Request,
@@ -22,9 +24,6 @@ export async function PATCH(
     const position: string = data.get("position") as unknown as string;
 
     if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
       const existingFile = await db.supervisor.findFirst({
         where: {
           id: params.supervisorId,
@@ -36,30 +35,10 @@ export async function PATCH(
       }
 
       if (existingFile.imageUrl) {
-        const currentPath = path.join(
-          process.cwd() + "/public" + existingFile.imageUrl
-        );
-
-        await unlink(currentPath);
+        await deleteFile(existingFile.imageUrl);
       }
 
-      const pathen = path.join(process.cwd() + "/public/images/supervisors");
-
-      const nameFile = `${
-        Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-      }-${name.toLocaleLowerCase().split(" ").join("_")}.${
-        file.type.split("/")[1]
-      }`;
-
-      const pathname = `/images/supervisors/${nameFile}`;
-
-      try {
-        await readdir(pathen);
-      } catch (error) {
-        await mkdir(pathen);
-      }
-
-      await writeFile(`${pathen}/${nameFile}`, buffer);
+      const pathname = await createFile(file, name, "supervisors", false);
 
       await db.supervisor.update({
         where: {

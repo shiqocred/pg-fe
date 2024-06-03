@@ -27,6 +27,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SponsorshipsProps } from "../../page";
+import { useCookies } from "next-client-cookies";
 
 interface SponsorshipFormProps {
   initialData: {
@@ -64,6 +65,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const params = useParams();
   const router = useRouter();
+  const cookies = useCookies();
 
   const title = initialData.id
     ? "Edit Sponsorship Form"
@@ -102,6 +104,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
       body.append("name", input.name);
       body.append("position", input.position);
       body.append("href", input.href);
+      body.append("profileId", input.cabang);
 
       if (!initialData.id) {
         // add
@@ -110,6 +113,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/sponsorships");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -120,6 +124,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/sponsorships");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -159,6 +164,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
                 onChange={(e) =>
                   setInput((prev) => ({ ...prev, imageUrl: e.target.files }))
                 }
+                accept="image/*"
                 name="imageUrl"
               />
             </div>
@@ -302,23 +308,25 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      {initialData.cabang.map((item) => (
-                        <DropdownMenuItem
-                          key={item.id}
-                          onClick={() =>
-                            setInput((prev) => ({
-                              ...prev,
-                              cabang: item.id,
-                            }))
-                          }
-                          className="capitalize"
-                        >
-                          {mapCabang
-                            .find((i) => i.value === item.cabang)
-                            ?.label.split("-")
-                            .join(" ")}
-                        </DropdownMenuItem>
-                      ))}
+                      {initialData.cabang
+                        .slice(1, initialData.cabang.length)
+                        .map((item) => (
+                          <DropdownMenuItem
+                            key={item.id}
+                            onClick={() =>
+                              setInput((prev) => ({
+                                ...prev,
+                                cabang: item.id,
+                              }))
+                            }
+                            className="capitalize"
+                          >
+                            {mapCabang
+                              .find((i) => i.value === item.cabang)
+                              ?.label.split("-")
+                              .join(" ")}
+                          </DropdownMenuItem>
+                        ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -351,20 +359,22 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
               )}
             </div>
             <Separator className="bg-gray-500" />
-            {!input.imageUrl && urlImage !== "" && (
-              <div className="relative w-full aspect-square overflow-hidden rounded-md">
-                <Image src={urlImage} alt="" fill className="object-cover" />
-              </div>
-            )}
-            {!input.imageUrl && urlImage === "" && (
-              <div className="w-full aspect-square flex justify-center items-center rounded-md">
-                <div className="flex flex-col items-center">
-                  <ImagePlus className="w-20 h-20 stroke-1" />
-                  <p className="font-semibold">No image previewed.</p>
+            {(!input.imageUrl || input.imageUrl.length === 0) &&
+              urlImage !== "" && (
+                <div className="relative w-full aspect-square overflow-hidden rounded-md">
+                  <Image src={urlImage} alt="" fill className="object-cover" />
                 </div>
-              </div>
-            )}
-            {input.imageUrl && (
+              )}
+            {(!input.imageUrl || input.imageUrl.length === 0) &&
+              urlImage === "" && (
+                <div className="w-full aspect-square flex justify-center items-center rounded-md">
+                  <div className="flex flex-col items-center">
+                    <ImagePlus className="w-20 h-20 stroke-1" />
+                    <p className="font-semibold">No image previewed.</p>
+                  </div>
+                </div>
+              )}
+            {input.imageUrl && input.imageUrl.length !== 0 && (
               <div className="relative w-full aspect-square overflow-hidden rounded-md">
                 <Image
                   src={URL.createObjectURL(input.imageUrl[0])}

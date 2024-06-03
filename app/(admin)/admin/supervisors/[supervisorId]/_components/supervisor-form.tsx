@@ -29,6 +29,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SupervisorsProps } from "../../page";
+import { useCookies } from "next-client-cookies";
 
 interface SupervisorFormProps {
   initialData: {
@@ -65,6 +66,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const params = useParams();
   const router = useRouter();
+  const cookies = useCookies();
 
   const title = initialData.id
     ? "Edit Supervisor Form"
@@ -109,6 +111,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/supervisors");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -119,6 +122,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/supervisors");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));

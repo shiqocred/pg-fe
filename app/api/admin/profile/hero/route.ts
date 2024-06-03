@@ -1,10 +1,10 @@
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { mkdir, readdir, unlink, writeFile } from "fs/promises";
-import path from "path";
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { $Enums } from "@prisma/client";
+import { createFile } from "@/lib/create-file";
+import { deleteFile } from "@/lib/delete-file";
 
 const mapCabang = [
   {
@@ -67,12 +67,13 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ success: false });
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
     const existingFile = await db.profile.findFirst({
       where: {
         cabang,
+      },
+      select: {
+        cabang: true,
+        heroUrl: true,
       },
     });
 
@@ -81,30 +82,13 @@ export async function PATCH(req: Request) {
     }
 
     if (existingFile.heroUrl) {
-      const currentPath = path.join(
-        process.cwd() + "/public" + existingFile.heroUrl
-      );
-
-      await unlink(currentPath);
+      await deleteFile(existingFile.heroUrl);
     }
-
     const nameHero = mapCabang.find(
       (item) => item.value === existingFile.cabang
     )?.label;
 
-    const pathen = path.join(process.cwd() + "/public/images/hero");
-
-    const nameFile = `${nameHero}.${file.type.split("/")[1]}`;
-
-    const pathname = `/images/hero/${nameFile}`;
-
-    try {
-      await readdir(pathen);
-    } catch (error) {
-      await mkdir(pathen);
-    }
-
-    await writeFile(`${pathen}/${nameFile}`, buffer);
+    const pathname = await createFile(file, nameHero ?? "", "hero", false);
 
     if (isAdmin) {
       const profileId = await db.profile.findFirst({

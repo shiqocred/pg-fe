@@ -1,9 +1,8 @@
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { mkdir, readdir, writeFile, unlink } from "fs/promises";
-import path from "path";
-import { getIsAdmin } from "@/actions/get-is-admin";
+import { deleteFile } from "@/lib/delete-file";
+import { createFile } from "@/lib/create-file";
 
 export async function PATCH(
   req: Request,
@@ -23,9 +22,6 @@ export async function PATCH(
     const isPublish: string = data.get("isPublish") as unknown as string;
 
     if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
       const existingFile = await db.poster.findFirst({
         where: {
           id: params.posterId,
@@ -36,29 +32,11 @@ export async function PATCH(
         return new NextResponse("Poster id is require", { status: 400 });
       }
 
-      const currentPath = path.join(
-        process.cwd() + "/public" + existingFile.posterUrl
-      );
-
-      await unlink(currentPath);
-
-      const pathen = path.join(process.cwd() + "/public/images/poster");
-
-      const nameFile = `${
-        Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-      }-${title.toLocaleLowerCase().split(" ").join("_")}.${
-        file.type.split("/")[1]
-      }`;
-
-      const pathname = `/images/poster/${nameFile}`;
-
-      try {
-        await readdir(pathen);
-      } catch (error) {
-        await mkdir(pathen);
+      if (existingFile.posterUrl) {
+        await deleteFile(existingFile.posterUrl);
       }
 
-      await writeFile(`${pathen}/${nameFile}`, buffer);
+      const pathname = await createFile(file, title, "blogs", false);
 
       await db.poster.update({
         where: {

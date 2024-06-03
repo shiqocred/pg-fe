@@ -20,6 +20,7 @@ import { mapCabang } from "@/lib/utils";
 import { formatDistanceStrict } from "date-fns";
 import { id as indonesia } from "date-fns/locale";
 import { boolean } from "zod";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export interface SupervisorsProps {
   id: string;
@@ -47,6 +48,8 @@ const PostersPage = async () => {
   const { userId } = await auth();
 
   if (!userId) return redirect("/login");
+
+  const isAdmin = await getIsAdmin(userId);
 
   const supervisors: SupervisorsResProps[] = await getSupervisors(userId);
 
@@ -87,7 +90,7 @@ const PostersPage = async () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <SupervisorClient data={formatedSupervisors} />
+      <SupervisorClient isAdmin={isAdmin} />
     </div>
   );
 };

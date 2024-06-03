@@ -5,6 +5,7 @@ import { mkdir, readdir, writeFile } from "fs/promises";
 import path from "path";
 import { getIsAdmin } from "@/actions/get-is-admin";
 import { $Enums } from "@prisma/client";
+import { createFile } from "@/lib/create-file";
 
 export async function POST(req: Request) {
   try {
@@ -25,24 +26,7 @@ export async function POST(req: Request) {
     }
 
     const dataMap = files.map(async (file) => {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      const pathen = path.join(process.cwd() + "/public/images/photos");
-
-      const nameFile = `${
-        Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-      }.${file.type.split("/")[1]}`;
-
-      try {
-        await readdir(pathen);
-      } catch (error) {
-        await mkdir(pathen);
-      }
-
-      await writeFile(`${pathen}/${nameFile}`, buffer);
-
-      const pathname = `/images/photos/${nameFile}`;
+      const pathname = await createFile(file, "", "photos", true);
 
       if (isAdmin) {
         const profileId = await db.profile.findFirst({

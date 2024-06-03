@@ -2,7 +2,6 @@ import React from "react";
 import { auth } from "@/hooks/use-auth";
 import { redirect } from "next/navigation";
 import { VideoTable } from "./_components/poster-table";
-import { getPosters } from "@/actions/get-posters";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,9 +11,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Header } from "@/components/header";
-import { mapCabang } from "@/lib/utils";
-import { formatDistanceStrict } from "date-fns";
-import { id as indonesia } from "date-fns/locale";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export interface PosterColumnsProps {
   id: string;
@@ -23,7 +20,6 @@ export interface PosterColumnsProps {
   posterUrl: string;
   isPublish: boolean;
   cabang: string;
-  isAdmin: boolean;
   date: string;
 }
 
@@ -32,29 +28,7 @@ const PostersPage = async () => {
 
   if (!userId) return redirect("/login");
 
-  const posters = await getPosters(userId);
-
-  const formatedPosters: PosterColumnsProps[] = posters.map((item) => ({
-    id: item.id,
-    title: item.title,
-    category: item.category.name,
-    posterUrl: item.posterUrl,
-    cabang:
-      mapCabang
-        .find((i) => i.value === item.profile.cabang)
-        ?.label.split("-")
-        .join(" ") ?? item.profile.cabang,
-    date: formatDistanceStrict(
-      item.createdAt.toString(),
-      new Date().toString(),
-      {
-        addSuffix: true,
-        locale: indonesia,
-      }
-    ),
-    isPublish: item.isPublish,
-    isAdmin: item.admin,
-  }));
+  const isAdmin = await getIsAdmin(userId);
 
   return (
     <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
@@ -72,7 +46,7 @@ const PostersPage = async () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <VideoTable data={formatedPosters} />
+      <VideoTable isAdmin={isAdmin} />
     </div>
   );
 };

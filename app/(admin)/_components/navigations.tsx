@@ -50,6 +50,8 @@ export const Navigations = (props: Props) => {
 
   useEffect(() => {
     setIsMounted(true);
+    setIsNavAdmin(isAdmin);
+    setNavCabang(cabang);
   }, []);
 
   if (!isMounted) {

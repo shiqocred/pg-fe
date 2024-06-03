@@ -15,6 +15,7 @@ import { Header } from "@/components/header";
 import { mapCabang } from "@/lib/utils";
 import { formatDistanceStrict } from "date-fns";
 import { id as indonesia } from "date-fns/locale";
+import { getIsAdmin } from "@/actions/get-is-admin";
 
 export interface VideoColumnsProps {
   id: string;
@@ -33,30 +34,30 @@ const VideosPage = async () => {
 
   if (!userId) return redirect("/login");
 
-  const videos = await getVideos(userId);
+  const isAdmin = await getIsAdmin(userId);
 
-  const formatedVideos: VideoColumnsProps[] = videos.map((item) => ({
-    id: item.id,
-    title: item.title,
-    category: item.category.name,
-    videoUrl: item.videoUrl,
-    thumbnailUrl: item.thumbnailUrl,
-    cabang:
-      mapCabang
-        .find((i) => i.value === item.profile.cabang)
-        ?.label.split("-")
-        .join(" ") ?? item.profile.cabang,
-    date: formatDistanceStrict(
-      item.createdAt.toString(),
-      new Date().toString(),
-      {
-        addSuffix: true,
-        locale: indonesia,
-      }
-    ),
-    isPublish: item.isPublish,
-    isAdmin: item.admin,
-  }));
+  // const formatedVideos: VideoColumnsProps[] = videos.map((item) => ({
+  //   id: item.id,
+  //   title: item.title,
+  //   category: item.category.name,
+  //   videoUrl: item.videoUrl,
+  //   thumbnailUrl: item.thumbnailUrl,
+  //   cabang:
+  //     mapCabang
+  //       .find((i) => i.value === item.profile.cabang)
+  //       ?.label.split("-")
+  //       .join(" ") ?? item.profile.cabang,
+  //   date: formatDistanceStrict(
+  //     item.createdAt.toString(),
+  //     new Date().toString(),
+  //     {
+  //       addSuffix: true,
+  //       locale: indonesia,
+  //     }
+  //   ),
+  //   isPublish: item.isPublish,
+  //   isAdmin: item.admin,
+  // }));
 
   return (
     <div className="flex flex-col gap-3 lg:gap-4 p-4 lg:p-6">
@@ -74,7 +75,7 @@ const VideosPage = async () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <VideoTable data={formatedVideos} />
+      <VideoTable isAdmin={isAdmin} />
     </div>
   );
 };

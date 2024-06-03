@@ -23,6 +23,7 @@ import {
   ImagePlus,
   NotebookPen,
 } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -64,6 +65,7 @@ export const PosterForm = ({ initialData }: PostersProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const params = useParams();
   const router = useRouter();
+  const cookies = useCookies();
 
   const title = initialData.id ? "Edit Poster Form" : "Create Poster Form";
   const label = initialData.id ? "Edit" : "Create";
@@ -111,6 +113,7 @@ export const PosterForm = ({ initialData }: PostersProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/posters");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -121,6 +124,7 @@ export const PosterForm = ({ initialData }: PostersProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/posters");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -161,6 +165,7 @@ export const PosterForm = ({ initialData }: PostersProps) => {
                   setInput((prev) => ({ ...prev, posterUrl: e.target.files }))
                 }
                 name="posterUrl"
+                accept="image/*"
               />
             </div>
             <div className="flex flex-col gap-y-2 w-full">
@@ -290,20 +295,22 @@ export const PosterForm = ({ initialData }: PostersProps) => {
               )}
             </div>
             <Separator className="bg-gray-500" />
-            {!input.posterUrl && urlImage !== "" && (
-              <div className="relative w-full aspect-[70/99] overflow-hidden rounded-md">
-                <Image src={urlImage} alt="" fill className="object-cover" />
-              </div>
-            )}
-            {!input.posterUrl && urlImage === "" && (
-              <div className="w-full aspect-[70/99] flex justify-center items-center rounded-md">
-                <div className="flex flex-col items-center">
-                  <ImagePlus className="w-20 h-20 stroke-1" />
-                  <p className="font-semibold">No image previewed.</p>
+            {(!input.posterUrl || input.posterUrl.length === 0) &&
+              urlImage !== "" && (
+                <div className="relative w-full aspect-[70/99] overflow-hidden rounded-md">
+                  <Image src={urlImage} alt="" fill className="object-cover" />
                 </div>
-              </div>
-            )}
-            {input.posterUrl && (
+              )}
+            {(!input.posterUrl || input.posterUrl.length === 0) &&
+              urlImage === "" && (
+                <div className="w-full aspect-[70/99] flex justify-center items-center rounded-md">
+                  <div className="flex flex-col items-center">
+                    <ImagePlus className="w-20 h-20 stroke-1" />
+                    <p className="font-semibold">No image previewed.</p>
+                  </div>
+                </div>
+              )}
+            {input.posterUrl && input.posterUrl.length !== 0 && (
               <div className="relative w-full aspect-[70/99] overflow-hidden rounded-md">
                 <Image
                   src={URL.createObjectURL(input.posterUrl[0])}

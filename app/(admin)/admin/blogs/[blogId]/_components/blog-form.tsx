@@ -28,6 +28,7 @@ import {
   ImagePlus,
   NotebookPen,
 } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -73,6 +74,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
   const params = useParams();
   const router = useRouter();
   const [isPreview, setIsPreview] = useState(false);
+  const cookies = useCookies();
 
   const urlImage = initialData?.imageUrl ?? "";
 
@@ -127,6 +129,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/blogs");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -137,6 +140,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/blogs");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -180,6 +184,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
                     setInput((prev) => ({ ...prev, imageUrl: e.target.files }))
                   }
                   name="imageUrl"
+                  accept="image/*"
                 />
               </div>
               <div className="flex flex-col gap-y-2 w-full">
@@ -219,7 +224,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
                               )?.cabang
                           )
                           ?.label.split("-")
-                          .join(" ") ?? "Pilih kategori..."}
+                          .join(" ") ?? "Pilih kampus..."}
                         <ChevronDown className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -345,20 +350,27 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
                 )}
               </div>
               <Separator className="bg-gray-500" />
-              {!input.imageUrl && urlImage !== "" && (
-                <div className="relative w-full aspect-video overflow-hidden rounded-md">
-                  <Image src={urlImage} alt="" fill className="object-cover" />
-                </div>
-              )}
-              {!input.imageUrl && urlImage === "" && (
-                <div className="w-full aspect-video flex justify-center items-center rounded-md">
-                  <div className="flex flex-col items-center">
-                    <ImagePlus className="w-20 h-20 stroke-1" />
-                    <p className="font-semibold">No image previewed.</p>
+              {(!input.imageUrl || input.imageUrl.length === 0) &&
+                urlImage !== "" && (
+                  <div className="relative w-full aspect-video overflow-hidden rounded-md">
+                    <Image
+                      src={urlImage}
+                      alt=""
+                      fill
+                      className="object-cover"
+                    />
                   </div>
-                </div>
-              )}
-              {input.imageUrl && (
+                )}
+              {(!input.imageUrl || input.imageUrl.length === 0) &&
+                urlImage === "" && (
+                  <div className="w-full aspect-video flex justify-center items-center rounded-md">
+                    <div className="flex flex-col items-center">
+                      <ImagePlus className="w-20 h-20 stroke-1" />
+                      <p className="font-semibold">No image previewed.</p>
+                    </div>
+                  </div>
+                )}
+              {input.imageUrl && input.imageUrl.length !== 0 && (
                 <div className="relative w-full aspect-video overflow-hidden rounded-md">
                   <Image
                     src={URL.createObjectURL(input.imageUrl[0])}

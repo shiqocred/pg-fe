@@ -1,23 +1,25 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import "react-quill/dist/quill.bubble.css";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 interface PreviewProps {
   value: string;
 }
 const Preview = ({ value }: PreviewProps) => {
-  const ReactQuill = useMemo(
-    () => dynamic(() => import("react-quill"), { ssr: false }),
-    []
-  );
+  const [isMounted, setIsMounted] = useState(false);
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  if (!isMounted) {
+    return "Loading...";
+  }
   return (
     <div className="">
-      <Suspense fallback={"Loading..."}>
-        <ReactQuill theme="bubble" value={value} readOnly />
-      </Suspense>
+      <ReactQuill theme="bubble" value={value} readOnly />
     </div>
   );
 };

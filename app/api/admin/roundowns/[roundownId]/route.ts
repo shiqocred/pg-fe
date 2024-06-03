@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { mkdir, readdir, unlink, writeFile } from "fs/promises";
 import path from "path";
+import { createFile } from "@/lib/create-file";
+import { deleteFile } from "@/lib/delete-file";
 
 export async function PATCH(
   req: Request,
@@ -34,30 +36,10 @@ export async function PATCH(
       }
 
       if (existingFile.imageUrl) {
-        const currentPath = path.join(
-          process.cwd() + "/public" + existingFile.imageUrl
-        );
-
-        await unlink(currentPath);
+        await deleteFile(existingFile.imageUrl);
       }
 
-      const pathen = path.join(process.cwd() + "/public/images/roundowns");
-
-      const nameFile = `${
-        Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-      }-${title.toLocaleLowerCase().split(" ").join("_")}.${
-        file.type.split("/")[1]
-      }`;
-
-      const pathname = `/images/roundowns/${nameFile}`;
-
-      try {
-        await readdir(pathen);
-      } catch (error) {
-        await mkdir(pathen);
-      }
-
-      await writeFile(`${pathen}/${nameFile}`, buffer);
+      const pathname = await createFile(file, title, "roundowns", false);
 
       await db.roundown.update({
         where: {

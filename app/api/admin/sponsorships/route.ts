@@ -1,10 +1,102 @@
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { mkdir, readdir, writeFile } from "fs/promises";
-import path from "path";
 import { $Enums } from "@prisma/client";
 import { getIsAdmin } from "@/actions/get-is-admin";
+import { createFile } from "@/lib/create-file";
+import { paginateData } from "@/lib/paginate-data";
+
+export async function GET(req: Request) {
+  try {
+    const { url } = req;
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const isAdmin = await getIsAdmin(userId);
+
+    const query = new URL(url).searchParams.get("q") ?? "";
+    const position = new URL(url).searchParams.get("ps") ?? "";
+    const cabang = new URL(url).searchParams.get("c") ?? "";
+
+    const whereClause: any = { name: { contains: query } };
+
+    if (position) {
+      whereClause.position = position as any;
+    }
+
+    if (isAdmin) {
+      if (cabang) {
+        whereClause.profile = { cabang: cabang as any };
+      }
+      const sponsors = await db.sponsor.findMany({
+        where: whereClause,
+        orderBy: {
+          createdAt: "desc",
+        },
+        select: {
+          id: true,
+          name: true,
+          imageUrl: true,
+          position: true,
+          createdAt: true,
+          href: true,
+          profile: {
+            select: {
+              id: true,
+              cabang: true,
+            },
+          },
+        },
+      });
+
+      const paginatesponsors = await paginateData(url, sponsors, 12);
+
+      return NextResponse.json(
+        { message: "Data matches", data: paginatesponsors },
+        {
+          status: 200,
+        }
+      );
+    }
+    whereClause.profileId = userId;
+
+    const sponsors = await db.sponsor.findMany({
+      where: whereClause,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        name: true,
+        imageUrl: true,
+        position: true,
+        createdAt: true,
+        href: true,
+        profile: {
+          select: {
+            id: true,
+            cabang: true,
+          },
+        },
+      },
+    });
+
+    const paginatesponsors = await paginateData(url, sponsors, 12);
+
+    return NextResponse.json(
+      { message: "Data matches", data: paginatesponsors },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.log("[ERROR_GET_SPONSOR]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -24,30 +116,18 @@ export async function POST(req: Request) {
       "position"
     ) as unknown as $Enums.SponsorEnum;
 
-    if (!file) {
-      return NextResponse.json({ success: false });
+    if (!name || !href || !position || !file || (isAdmin && !profileId)) {
+      return new NextResponse(
+        `[ ${!name ? "Name " : ""}${!href ? "Href " : ""}${
+          !position ? "Position " : ""
+        }${!file ? "Image " : ""}${
+          isAdmin && !profileId ? "Kampus " : ""
+        }] is required`,
+        { status: 400 }
+      );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const pathen = path.join(process.cwd() + "/public/images/sponsorships");
-
-    const nameFile = `${
-      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-    }-${name.toLocaleLowerCase().split(" ").join("_")}.${
-      file.type.split("/")[1]
-    }`;
-
-    const pathname = `/images/sponsorships/${nameFile}`;
-
-    try {
-      await readdir(pathen);
-    } catch (error) {
-      await mkdir(pathen);
-    }
-
-    await writeFile(`${pathen}/${nameFile}`, buffer);
+    const pathname = await createFile(file, name, "sponsorships", false);
 
     if (isAdmin) {
       await db.sponsor.create({

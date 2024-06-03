@@ -1,9 +1,106 @@
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { mkdir, readdir, writeFile } from "fs/promises";
-import path from "path";
 import { getIsAdmin } from "@/actions/get-is-admin";
+import { createFile } from "@/lib/create-file";
+import { paginateData } from "@/lib/paginate-data";
+
+export async function GET(req: Request) {
+  try {
+    const { url } = req;
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const isAdmin = await getIsAdmin(userId);
+
+    const query = new URL(url).searchParams.get("q") ?? "";
+    const status = new URL(url).searchParams.get("s") ?? "";
+    const cabang = new URL(url).searchParams.get("c") ?? "";
+
+    const whereClause: any = { title: { contains: query } };
+
+    if (status === "draft" || status === "isPublish") {
+      whereClause.isPublish =
+        (status === "draft" && false) || (status === "isPublish" && true);
+    }
+
+    if (isAdmin) {
+      if (cabang) {
+        whereClause.profile = { cabang: cabang as any };
+      }
+      const posters = await db.poster.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          title: true,
+          posterUrl: true,
+          createdAt: true,
+          isPublish: true,
+          profile: {
+            select: {
+              id: true,
+              cabang: true,
+            },
+          },
+          category: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      const paginateposters = await paginateData(url, posters, 12);
+
+      return NextResponse.json(
+        { message: "Data poster matches", data: paginateposters },
+        {
+          status: 200,
+        }
+      );
+    }
+    whereClause.profileId = userId;
+
+    const posters = await db.poster.findMany({
+      where: whereClause,
+      select: {
+        id: true,
+        title: true,
+        posterUrl: true,
+        createdAt: true,
+        isPublish: true,
+        profile: {
+          select: {
+            id: true,
+            cabang: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    const paginateposters = await paginateData(url, posters, 12);
+
+    return NextResponse.json(
+      { message: "Data poster matches", data: paginateposters },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.log("[ERROR_GET_POSTERS]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
 
 export async function POST(req: Request) {
   try {
@@ -22,30 +119,16 @@ export async function POST(req: Request) {
     const isPublish: string = data.get("isPublish") as unknown as string;
     const profileId: string = data.get("profileId") as unknown as string;
 
-    if (!file) {
-      return NextResponse.json({ success: false });
+    if (!title || !category || !file || (isAdmin && !profileId)) {
+      return new NextResponse(
+        `[ ${!title ? "Title " : ""}${!category ? "Category " : ""}${
+          !file ? "Image " : ""
+        }${isAdmin && !profileId ? "Kampus " : ""}] is required`,
+        { status: 400 }
+      );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    const pathen = path.join(process.cwd() + "/public/images/poster");
-
-    const nameFile = `${
-      Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000
-    }-${title.toLocaleLowerCase().split(" ").join("_")}.${
-      file.type.split("/")[1]
-    }`;
-
-    const pathname = `/images/poster/${nameFile}`;
-
-    try {
-      await readdir(pathen);
-    } catch (error) {
-      await mkdir(pathen);
-    }
-
-    await writeFile(`${pathen}/${nameFile}`, buffer);
+    const pathname = await createFile(file, title, "posters", false);
 
     if (isAdmin) {
       await db.poster.create({

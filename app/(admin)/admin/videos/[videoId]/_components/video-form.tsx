@@ -15,9 +15,11 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { cn, mapCabang } from "@/lib/utils";
+import { TooltipProviderPage } from "@/providers/tooltip-provider-page";
 import { $Enums, Video } from "@prisma/client";
 import axios from "axios";
 import {
+  AlertCircle,
   ChevronDown,
   ImageIcon,
   ImageMinus,
@@ -25,6 +27,7 @@ import {
   NotebookPen,
   VideoIcon,
 } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, MouseEvent, useEffect, useState } from "react";
@@ -68,6 +71,7 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
   const [urlVideo, setUrlVideo] = useState("");
   const params = useParams();
   const router = useRouter();
+  const cookies = useCookies();
 
   const urlImage = initialData?.thumbnailUrl ?? "";
 
@@ -130,6 +134,7 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/videos");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => {
@@ -143,6 +148,7 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
           .then((response) => {
             toast.success(response.data);
             router.push("/admin/videos");
+            cookies.set("updated", "updated");
             router.refresh();
           })
           .catch((error) => toast.error(error.response.data));
@@ -186,6 +192,7 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
                     thumbnailUrl: e.target.files,
                   }))
                 }
+                accept="image/*"
                 name="thumbnailUrl"
               />
             </div>
@@ -273,7 +280,12 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
                 </DropdownMenu>
               </div>
               <div className="flex flex-col gap-y-2 w-full">
-                <Label>Kode Video</Label>
+                <Label className="flex items-center">
+                  Kode Video
+                  <TooltipProviderPage text="https://www.youtube.com/watch?v=KODE_VIDEO">
+                    <AlertCircle className="w-3 h-3 ml-2" />
+                  </TooltipProviderPage>
+                </Label>
                 <div className="flex gap-x-2">
                   <Input
                     placeholder="Unique link video"
