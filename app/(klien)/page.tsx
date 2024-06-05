@@ -359,7 +359,7 @@ const HomePage = () => {
             </div>
             {dashboards.posters.map((item) => (
               <SwiperSlide key={item.id} className="h-full">
-                <Link href="#" className="w-full h-full">
+                <Link href={`/posters/${item.id}`} className="w-full h-full">
                   <Card className="flex items-center w-full justify-center shadow-none relative flex-col h-full bg-transparent">
                     <div className="relative w-full aspect-[70/99] rounded-md overflow-hidden">
                       <div className="pb-2 pt-4 overflow-hidden bg-gradient-to-b from-black/0 to-black/80 absolute bottom-0 z-10 w-full text-white text-start font-avenir font-semibold flex px-2 gap-1">

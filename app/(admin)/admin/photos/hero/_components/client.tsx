@@ -84,8 +84,6 @@ export const PosterForm = ({
     }
   };
 
-  console.log(idProfile);
-
   useEffect(() => {
     getHeroImage();
   }, [cabang]);

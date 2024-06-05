@@ -210,6 +210,7 @@ export const ClientRoundown = ({
                   onChange={(e) =>
                     setInput((prev) => ({ ...prev, imageUrl: e.target.files }))
                   }
+                  accept="image/*"
                 />
               </div>
             </div>

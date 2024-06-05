@@ -69,7 +69,7 @@ export const Client = ({
   const [isLoadingFaq, setIsLoadingFaq] = useState(false);
   const [isLoadingAcara, setIsLoadingAcara] = useState(false);
 
-  const [roundowns, setroundowns] = useState<RoundownsProps[]>([]);
+  const [roundowns, setRoundowns] = useState<RoundownsProps[]>([]);
   const [faqs, setFaqs] = useState<FaqsProps[]>([]);
   const [information, setInformation] = useState<InfoProps | null>(null);
 
@@ -116,7 +116,7 @@ export const Client = ({
   const getRoundownsRes = async () => {
     const roundownsRes: RoundownsProps[] = await handleGetRoundowns(cabang);
 
-    setroundowns(roundownsRes);
+    setRoundowns(roundownsRes);
   };
   const getFaqsRes = async () => {
     const faqsRes: FaqsProps[] = await handleGetFaqs(cabang);
@@ -185,10 +185,7 @@ export const Client = ({
                   className="justify-between capitalize gap-4 h-9"
                   disabled={isLoadingAcara || isLoadingFaq || isLoadingInfo}
                 >
-                  {mapCabang
-                    .find((item) => item.value === cabang)
-                    ?.label.split("-")
-                    .join(" ")}
+                  {mapCabang.find((item) => item.value === cabang)?.kampus}
                   <ChevronDown className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -199,10 +196,7 @@ export const Client = ({
                     onClick={() => setCabang(item.value)}
                     className="capitalize"
                   >
-                    {mapCabang
-                      .find((i) => i.value === item.value)
-                      ?.label.split("-")
-                      .join(" ")}
+                    {mapCabang.find((i) => i.value === item.value)?.kampus}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

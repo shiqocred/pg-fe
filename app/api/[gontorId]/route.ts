@@ -11,6 +11,10 @@ export async function GET(
     const current =
       mapCabang.find((item) => item.label === params.gontorId)?.slug ?? "";
 
+    if (!current || "") {
+      return new NextResponse("Access denided", { status: 404 });
+    }
+
     const cabangParams = current.toString().includes("putri")
       ? current.toString().split("-")[1].toUpperCase() +
         current.toString().split("-")[2].toUpperCase()
