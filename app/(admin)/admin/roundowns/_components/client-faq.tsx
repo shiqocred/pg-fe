@@ -19,7 +19,9 @@ import { useModal } from "@/hooks/use-modal";
 export const ClientFaq = ({
   initialData,
   cabang,
+  isLoading,
 }: {
+  isLoading: boolean;
   initialData: FaqsProps[];
   cabang: string;
 }) => {
@@ -125,7 +127,7 @@ export const ClientFaq = ({
   }, [initialData]);
   return (
     <div className="mt-6 border rounded-md p-4 relative w-full">
-      {isUpdating && (
+      {(isUpdating || isLoading) && (
         <div className="absolute h-full w-full bg-slate-500/20 rounded-md top-0 right-0 flex items-center justify-center">
           <Loader2 className="h-6 w-6 text-sky-700 animate-spin" />
         </div>

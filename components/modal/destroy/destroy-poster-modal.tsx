@@ -6,19 +6,22 @@ import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
-import { destroyPoster } from "@/actions/destroy/destroy-poster";
+import { useCookies } from "next-client-cookies";
+import axios from "axios";
 
 export const DestroyPosterModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
+  const cookies = useCookies();
 
   const isModalOpen = isOpen && type === "delete-poster";
 
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await destroyPoster(data);
+      await axios.delete(`/api/admin/posters/${data}`);
       toast.success("Poster berhasil dihapus");
+      cookies.set("updated", "updated");
       onClose();
       router.refresh();
     } catch (error) {

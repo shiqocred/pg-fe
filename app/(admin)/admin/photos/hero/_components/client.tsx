@@ -25,6 +25,7 @@ import {
   ImagePlus,
   NotebookPen,
 } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -47,6 +48,8 @@ export const PosterForm = ({
 
   const [input, setInput] = useState<FileList | null>(null);
 
+  const cookies = useCookies();
+
   const handleGetHero = async (data: string) => {
     try {
       const res = await axios.get(`/api/admin/profile/hero/${data}`);
@@ -66,13 +69,14 @@ export const PosterForm = ({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const body = new FormData();
-    if (input) {
+    if (input && input.length > 0) {
       body.append("heroUrl", input[0]);
     }
     body.append("cabang", idProfile);
     try {
       axios.patch("/api/admin/profile/hero", body);
       toast.success("Gambar berhasil diperbarui");
+      cookies.set("updated", "updated");
       router.push("/admin/photos");
     } catch (error) {
       toast.success("Gambar gagal diperbarui");
@@ -176,7 +180,7 @@ export const PosterForm = ({
                 </div>
                 Image Preview
               </h3>
-              {input && (
+              {input && input.length > 0 && (
                 <Button
                   variant={"destructive"}
                   className="h-8 w-8 p-0"
@@ -187,7 +191,7 @@ export const PosterForm = ({
               )}
             </div>
             <Separator className="bg-gray-500" />
-            {!input && imageUrl && (
+            {(!input || input.length === 0) && imageUrl && (
               <div className="relative w-full aspect-square overflow-hidden rounded-md">
                 <Image
                   src={imageUrl ?? ""}
@@ -197,7 +201,7 @@ export const PosterForm = ({
                 />
               </div>
             )}
-            {!input && !imageUrl && (
+            {(!input || input.length === 0) && !imageUrl && (
               <div className="w-full aspect-square flex justify-center items-center rounded-md">
                 <div className="flex flex-col items-center">
                   <ImagePlus className="w-20 h-20 stroke-1" />
@@ -205,7 +209,7 @@ export const PosterForm = ({
                 </div>
               </div>
             )}
-            {input && (
+            {input && input.length > 0 && (
               <div className="relative w-full aspect-square overflow-hidden rounded-md">
                 <Image
                   src={URL.createObjectURL(input[0])}

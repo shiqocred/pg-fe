@@ -13,7 +13,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import Image from "next/image";
+import { Footer } from "@/components/footer";
 
 const images = [
   "/images/main/gontor3.webp",
@@ -72,7 +76,40 @@ const images = [
   "/images/main/gontor6.webp",
 ];
 
+interface PhotosProps {
+  id: string;
+  imageUrl: string | null;
+  cabang: string;
+}
+
 const BTSImagesPage = () => {
+  const [photos, setPhotos] = useState<PhotosProps[]>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isBTSOpen, setIsBTSOpen] = useState(false);
+  const [urlPhoto, setUrlPhoto] = useState("");
+
+  const handleOpen = (data: string) => {
+    setUrlPhoto(data);
+    setIsBTSOpen(true);
+  };
+
+  const handleGetData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(`/api/photos`);
+      const data = res.data.data;
+      console.log(data);
+      setPhotos(data);
+    } catch (error) {
+      console.log(["ERROR_GET_PHOTOS:"], error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetData();
+  }, []);
   return (
     <main className="bg-[#EBF0E5] font-revans w-screen min-h-screen h-auto relative">
       <Navbar />
@@ -100,8 +137,21 @@ const BTSImagesPage = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <ParallaxScroll images={images} />
+        <Dialog open={isBTSOpen} onOpenChange={setIsBTSOpen}>
+          <DialogContent className="p-2">
+            <div className="w-full relatif object-cover aspect-square relative  rounded-md overflow-hidden">
+              <Image
+                className="object-cover pointer-events-none"
+                src={urlPhoto}
+                alt=""
+                fill
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+        <ParallaxScroll images={photos} setUrl={handleOpen} />
       </section>
+      <Footer />
     </main>
   );
 };

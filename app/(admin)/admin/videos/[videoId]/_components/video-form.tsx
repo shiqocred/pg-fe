@@ -116,7 +116,7 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
     e.preventDefault();
     try {
       const body = new FormData();
-      if (input.thumbnailUrl) {
+      if (input.thumbnailUrl && input.thumbnailUrl.length > 0) {
         body.append("thumbnailUrl", input.thumbnailUrl[0]);
       }
       if (initialData.admin) {
@@ -343,7 +343,7 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
                 </div>
                 Thumbnail Preview
               </h3>
-              {input.thumbnailUrl && (
+              {input.thumbnailUrl && input.thumbnailUrl.length > 0 && (
                 <Button
                   variant={"destructive"}
                   className="h-8 w-8 p-0"
@@ -356,20 +356,22 @@ export const VideoForm = ({ initialData }: BlogsProps) => {
               )}
             </div>
             <Separator className="bg-gray-500" />
-            {!input.thumbnailUrl && urlImage !== "" && (
-              <div className="relative w-full aspect-video overflow-hidden rounded-md">
-                <Image src={urlImage} alt="" fill className="object-cover" />
-              </div>
-            )}
-            {!input.thumbnailUrl && urlImage === "" && (
-              <div className="w-full aspect-video flex justify-center items-center rounded-md">
-                <div className="flex flex-col items-center">
-                  <ImagePlus className="w-20 h-20 stroke-1" />
-                  <p className="font-semibold">No image previewed.</p>
+            {(!input.thumbnailUrl || input.thumbnailUrl.length === 0) &&
+              urlImage !== "" && (
+                <div className="relative w-full aspect-video overflow-hidden rounded-md">
+                  <Image src={urlImage} alt="" fill className="object-cover" />
                 </div>
-              </div>
-            )}
-            {input.thumbnailUrl && (
+              )}
+            {(!input.thumbnailUrl || input.thumbnailUrl.length === 0) &&
+              urlImage === "" && (
+                <div className="w-full aspect-video flex justify-center items-center rounded-md">
+                  <div className="flex flex-col items-center">
+                    <ImagePlus className="w-20 h-20 stroke-1" />
+                    <p className="font-semibold">No image previewed.</p>
+                  </div>
+                </div>
+              )}
+            {input.thumbnailUrl && input.thumbnailUrl.length > 0 && (
               <div className="relative w-full aspect-video overflow-hidden rounded-md">
                 <Image
                   src={URL.createObjectURL(input.thumbnailUrl[0])}

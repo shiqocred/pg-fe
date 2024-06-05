@@ -1,6 +1,7 @@
 "use client";
 
 import { CardPondok } from "@/components/card-pondok";
+import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -194,7 +195,7 @@ const HomePage = () => {
                     className="first:col-span-2 bg-transparent p-0 hover:bg-transparent w-full flex h-full group"
                   >
                     <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow-sm bg-transparent">
-                      <div className="w-full relatif object-cover aspect-video relative  rounded-md overflow-hidden shadow-md">
+                      <div className="w-full relatif object-cover group-first:aspect-video aspect-[7/5] relative  rounded-md overflow-hidden shadow-md">
                         <div className="w-full h-full absolute top-0 left-0 bg-white/20 backdrop-blur-sm z-20 group-hover:flex items-center justify-center hidden">
                           <PlayCircle className="w-12 h-12 stroke-[1.5]" />
                         </div>
@@ -395,69 +396,70 @@ const HomePage = () => {
             MORE
           </p>
         </div>
-        <div className="w-full px-3 pb-20 gap-3 grid grid-cols-2">
+        <div className="w-full px-3 gap-3 grid grid-cols-2">
           <CardPondok
-            href="/gontor-1"
+            href="/kampus-pusat"
             image="/images/main/gontor1.webp"
             location="Gontor, Ponorogo, Jawa Timur"
             title="Kampus Putra Pusat"
           />
           <CardPondok
-            href="/gontor-3"
+            href="/kampus-3"
             image="/images/main/gontor3.webp"
             location="Kediri, Jawa Timur"
             title="Kampus Putra 3 - DarulMa'rifat"
           />
           <CardPondok
-            href="/gontor-4"
+            href="/kampus-4"
             image="/images/main/gontor4.webp"
             location="Banyuwangi, Jawa Timur"
             title="Kampus Putra 4 - Darul Muttaqien"
           />
           <CardPondok
-            href="/gontor-5"
+            href="/kampus-5"
             image="/images/main/gontor5.webp"
             location="Magelang, Jawa Tengah"
             title="Kampus Putra 5 - Darul Qiyam"
           />
           <CardPondok
-            href="/gontor-6"
+            href="/kampus-6"
             image="/images/main/gontor6.webp"
             location="Konawe Selatan, Sulawesi Tenggara"
             title="Kampus Putra 6 - Riyadhatul Mujahidin"
           />
           <CardPondok
-            href="/gontor-7"
+            href="/kampus-7"
             image="/images/main/gontor7.webp"
             location="Kalianda, Lampung"
             title="Kampus Putra 7"
           />
           <CardPondok
-            href="/gontor-putri-1"
+            href="/kampus-putri-1"
             image="/images/main/gontorGp1.webp"
             location="Ngawi, Jawa Timur"
             title="Kampus Putri 1"
           />
           <CardPondok
-            href="/gontor-putri-3"
+            href="/kampus-putri-3"
             image="/images/main/gontorGp3.webp"
             location="Ngawi, Jawa Timur"
             title="Kampus Putri 3"
           />
           <CardPondok
-            href="/gontor-putri-4"
+            href="/kampus-putri-4"
             image="/images/main/gontorGp4.webp"
             location="Kediri, Jawa Timur"
             title="Kampus Putri 4"
           />
           <CardPondok
-            href="/gontor-putri-7"
+            href="/kampus-putri-7"
             image="/images/main/gontorGp7.webp"
             location="Kampar, Riau"
             title="Kampus Putri 7"
           />
         </div>
       </section>
+      <Footer />
     </main>
   );
 };

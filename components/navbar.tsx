@@ -2,61 +2,59 @@
 
 import React, { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { Check, ChevronDown, Menu } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Home,
+  ImageIcon,
+  Images,
+  Menu,
+  MonitorPlay,
+  Newspaper,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, mapCabang } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Command, CommandGroup, CommandItem, CommandList } from "./ui/command";
-import { useParams, useRouter } from "next/navigation";
-
-const mapGontor = [
-  {
-    label: "Kampus Putra 1",
-    value: "gontor-1",
-  },
-  {
-    label: "Kampus Putra 3",
-    value: "gontor-3",
-  },
-  {
-    label: "Kampus Putra 4",
-    value: "gontor-4",
-  },
-  {
-    label: "Kampus Putra 5",
-    value: "gontor-5",
-  },
-  {
-    label: "Kampus Putra 6",
-    value: "gontor-6",
-  },
-  {
-    label: "Kampus Putra 7",
-    value: "gontor-7",
-  },
-  {
-    label: "Kampus Putri 1",
-    value: "gontor-putri-1",
-  },
-  {
-    label: "Kampus Putri 3",
-    value: "gontor-putri-3",
-  },
-  {
-    label: "Kampus Putri 4",
-    value: "gontor-putri-4",
-  },
-  {
-    label: "Kampus Putri 7",
-    value: "gontor-putri-7",
-  },
-];
+import { useParams, usePathname, useRouter } from "next/navigation";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 
 export const Navbar = ({ isGontor }: { isGontor?: boolean }) => {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const { gontorId } = useParams();
+  const pathname = usePathname();
+
+  const menuMap = [
+    {
+      label: "Blog",
+      href: isGontor ? `/${gontorId}/blogs` : "/blogs",
+      icon: Newspaper,
+    },
+    {
+      label: "Video",
+      href: isGontor ? `/${gontorId}/bts-videos` : "/bts-videos",
+      icon: MonitorPlay,
+    },
+    {
+      label: "Photo",
+      href: isGontor ? `/${gontorId}/bts-images` : "/bts-images",
+      icon: ImageIcon,
+    },
+    {
+      label: "Poster",
+      href: isGontor ? `/${gontorId}/posters` : "/posters",
+      icon: Images,
+    },
+  ];
 
   useEffect(() => {
     setIsMounted(true);
@@ -81,7 +79,7 @@ export const Navbar = ({ isGontor }: { isGontor?: boolean }) => {
         <Popover>
           <PopoverTrigger asChild>
             <Button className="w-full h-8 bg-[#7B897F] hover:bg-[#7B897F]/80 justify-between">
-              {mapGontor.find((item) => item.value === gontorId)?.label}
+              {mapCabang.find((item) => item.label === gontorId)?.kampus}
               <ChevronDown className="w-4 h-4" />
             </Button>
           </PopoverTrigger>
@@ -89,20 +87,20 @@ export const Navbar = ({ isGontor }: { isGontor?: boolean }) => {
             <Command className="bg-[#EBF0E5]">
               <CommandGroup>
                 <CommandList className="max-h-[360px]">
-                  {mapGontor.map((item) => (
+                  {mapCabang.map((item) => (
                     <CommandItem
                       key={item.value}
-                      onSelect={() => router.push(`/${item.value}`)}
+                      onSelect={() => router.push(`/${item.label}`)}
                       className="aria-selected:bg-[#b8c2aa]"
                       aria-selected={item.value === gontorId}
                     >
                       <Check
                         className={
                           (cn("w-4 h-4 mr-2"),
-                          item.value === gontorId ? "opacity-100" : "opacity-0")
+                          item.label === gontorId ? "opacity-100" : "opacity-0")
                         }
                       />
-                      {item.label}
+                      {item.kampus}
                     </CommandItem>
                   ))}
                 </CommandList>
@@ -111,13 +109,62 @@ export const Navbar = ({ isGontor }: { isGontor?: boolean }) => {
           </PopoverContent>
         </Popover>
       )}
-      <Button
-        variant={"outline"}
-        size={"icon"}
-        className="bg-transparent hover:bg-white/20 border-[#7B897F] text-[#7B897F] w-8 h-8 flex-none"
-      >
-        <Menu className="h-4 w-4" />
-      </Button>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant={"outline"}
+            size={"icon"}
+            className="bg-transparent hover:bg-white/20 border-[#7B897F] text-[#7B897F] w-8 h-8 flex-none"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent className="bg-[#EBF0E5]">
+          <SheetHeader className="text-start">
+            <SheetTitle>Navigation</SheetTitle>
+          </SheetHeader>
+          <div className="py-10 h-full flex flex-col justify-between">
+            <ul className="w-full flex flex-col gap-y-2">
+              <li>
+                <Link href={isGontor ? `/${gontorId}` : "/"}>
+                  <Button
+                    className={cn(
+                      "w-full hover:bg-[#7B897F]/50 bg-transparent justify-start",
+                      (isGontor
+                        ? pathname === `/${gontorId}`
+                        : pathname === "/") &&
+                        "bg-[#7B897F] hover:bg-[#7B897F]/80 text-[#EBF0E5]"
+                    )}
+                    variant={"ghost"}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Home className="h-4 w-4 mr-2" />
+                    Beranda
+                  </Button>
+                </Link>
+              </li>
+              {menuMap.map((item) => (
+                <li key={item.label}>
+                  <Link href={item.href}>
+                    <Button
+                      className={cn(
+                        "w-full hover:bg-[#7B897F]/50 bg-transparent justify-start",
+                        pathname.includes(item.href) &&
+                          "bg-[#7B897F] hover:bg-[#7B897F]/80 text-[#EBF0E5]"
+                      )}
+                      variant={"ghost"}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <item.icon className="h-4 w-4 mr-2" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

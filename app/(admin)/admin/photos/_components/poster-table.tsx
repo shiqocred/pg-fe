@@ -11,13 +11,12 @@ import {
   ChevronDown,
   Minus,
   Check,
+  RotateCcw,
+  Loader2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { $Enums } from "@prisma/client";
-import { getHero } from "@/actions/get-hero";
-import { getProfiles } from "@/actions/get-profiles";
-import { getPhotos } from "@/actions/get-photos";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,14 +27,8 @@ import { cn, mapCabang } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useModal } from "@/hooks/use-modal";
 import { useCookies } from "next-client-cookies";
-import { db } from "@/lib/db";
-import { getProfileIdFromCabang } from "@/actions/get-profile-id-from-cabang";
 import axios from "axios";
-
-interface initialData {
-  heroUrl: string | null | undefined;
-  photos: (string | null)[];
-}
+import { Separator } from "@/components/ui/separator";
 
 interface UrlPhotos {
   id: string;
@@ -50,6 +43,8 @@ export const VideoTable = ({
   isAdmin: boolean;
 }) => {
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoadingHero, setIsLoadingHero] = useState(false);
+  const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
   const { onOpen } = useModal();
   const cookies = useCookies();
 
@@ -77,19 +72,25 @@ export const VideoTable = ({
   };
 
   const handleGetHero = async (data: string) => {
+    setIsLoadingHero(true);
     try {
       const res = await axios.get(`/api/admin/profile/hero/${data}`);
       return res.data.heroUrl.heroUrl;
     } catch (error) {
       console.log("[ERROR_GET_HERO_URL]", error);
+    } finally {
+      setIsLoadingHero(false);
     }
   };
   const handleGetPhotos = async (data: string) => {
+    setIsLoadingPhotos(true);
     try {
       const res = await axios.get(`/api/admin/photos/${data}`);
       return res.data.photos;
     } catch (error) {
       console.log("[ERROR_GET_PHOTOS]", error);
+    } finally {
+      setIsLoadingPhotos(false);
     }
   };
 
@@ -120,10 +121,10 @@ export const VideoTable = ({
     getHeroImage();
     getPhotosRes();
     setDestroyIds([]);
-    if (cookies.get("deleted")) {
-      cookies.remove("deleted");
+    if (cookies.get("updated")) {
+      cookies.remove("updated");
     }
-  }, [cabang, cookies.get("deleted")]);
+  }, [cabang, cookies.get("updated")]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -136,40 +137,71 @@ export const VideoTable = ({
   }
   return (
     <div className="flex flex-col gap-4">
-      {isAdmin && (
+      {isAdmin ? (
         <Card className="flex md:items-center md:justify-between px-2 md:px-5 py-2 gap-2 bg-gray-200 flex-col md:flex-row mb-10 md:mb-5">
           <p className="text-gray-700 text-sm">Silahkan pilih kampus!</p>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="justify-between capitalize gap-4">
-                {mapCabang
-                  .find((item) => item.value === cabang)
-                  ?.label.split("-")
-                  .join(" ")}
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {mapCabang.map((item) => (
-                <DropdownMenuItem
-                  key={item.value}
-                  onClick={() => setCabang(item.value)}
-                  className="capitalize"
+          <div className="flex gap-2">
+            <Button
+              className="p-0 h-9 w-9 border-gray-500"
+              variant={"outline"}
+              onClick={() => cookies.set("updated", "updated")}
+              disabled={isLoadingHero || isLoadingPhotos}
+            >
+              <RotateCcw className="w-4 h-4" />
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="justify-between capitalize gap-4 h-9"
+                  disabled={isLoadingHero || isLoadingPhotos}
                 >
                   {mapCabang
-                    .find((i) => i.value === item.value)
+                    .find((item) => item.value === cabang)
                     ?.label.split("-")
                     .join(" ")}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {mapCabang.map((item) => (
+                  <DropdownMenuItem
+                    key={item.value}
+                    onClick={() => setCabang(item.value)}
+                    className="capitalize"
+                  >
+                    {mapCabang
+                      .find((i) => i.value === item.value)
+                      ?.label.split("-")
+                      .join(" ")}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </Card>
+      ) : (
+        <Card className="flex md:items-center md:justify-between px-2 md:px-5 py-2 gap-2 bg-gray-200 flex-col md:flex-row mb-10 md:mb-5">
+          <p className="text-gray-700 text-sm">Reload data</p>
+          <Button
+            className="p-0 h-9 w-9 border-gray-500"
+            variant={"outline"}
+            onClick={() => cookies.set("updated", "updated")}
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
         </Card>
       )}
       <div className="flex gap-4 flex-col md:flex-row">
-        <div className="flex flex-col w-full md:w-1/3 lg:w-1/4">
-          <div className="flex w-full justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold">Hero Photo</h3>
+        <div className="flex flex-col w-full md:w-1/3 lg:w-1/4 border p-3 rounded-md relative">
+          {isLoadingHero && (
+            <div className="w-full h-full absolute bg-gray-500/20 backdrop-blur-sm top-0 left-0 z-10 flex items-center justify-center rounded-md">
+              <Loader2 className="w-10 h-10 animate-spin text-gray-700 dark:text-white" />
+            </div>
+          )}
+          <div className="flex w-full justify-between items-center gap-2">
+            <h3 className="text-lg font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+              Hero Photo
+            </h3>
             <Link href="/admin/photos/hero">
               <Button className="h-9">
                 <ArrowRightLeft className="w-4 h-4 mr-2" />
@@ -177,15 +209,21 @@ export const VideoTable = ({
               </Button>
             </Link>
           </div>
-          <div className="relative w-full aspect-square rounded-md overflow-hidden border">
+          <Separator className="bg-gray-500 my-3" />
+          <div className="relative w-full aspect-square rounded overflow-hidden">
             {urlImage && <Image className="" src={urlImage} alt="" fill />}
             {!urlImage && (
               <Image className="" src={"/images/main_image.jpg"} alt="" fill />
             )}
           </div>
         </div>
-        <div className="flex flex-col w-full md:w-2/3 lg:w-3/4">
-          <div className="flex w-full justify-between items-center mb-3">
+        <div className="flex flex-col w-full md:w-2/3 lg:w-3/4 border p-3 rounded-md relative">
+          {isLoadingPhotos && (
+            <div className="w-full h-full absolute bg-gray-500/20 backdrop-blur-sm top-0 left-0 z-10 flex items-center justify-center rounded-md">
+              <Loader2 className="w-10 h-10 animate-spin text-gray-700 dark:text-white" />
+            </div>
+          )}
+          <div className="flex w-full justify-between items-center gap-2">
             <h3 className="text-lg font-semibold">BTS Photos</h3>
             <Link href="/admin/photos/upload">
               <Button className="h-9">
@@ -194,8 +232,9 @@ export const VideoTable = ({
               </Button>
             </Link>
           </div>
+          <Separator className="bg-gray-500 my-3" />
           {urlPhotos.length !== 0 ? (
-            <div className="flex flex-col w-full gap-3 p-3 rounded-lg border">
+            <div className="flex flex-col w-full gap-3 rounded">
               <Card className="rounded text-sm px-3 py-1 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Button
@@ -229,7 +268,7 @@ export const VideoTable = ({
                   <Card key={item.id} className="col-span-1  flex flex-col">
                     <div className="relative w-full aspect-square rounded overflow-hidden shadow">
                       <Checkbox
-                        className="w-5 h-5 absolute top-2 left-2 z-10 bg-white data-[state=checked]:bg-white data-[state=checked]:text-black"
+                        className="w-5 h-5 absolute top-2 left-2 z-[5] bg-white data-[state=checked]:bg-white data-[state=checked]:text-black"
                         checked={destroyIds.includes(item.id)}
                         onCheckedChange={(e) => {
                           e

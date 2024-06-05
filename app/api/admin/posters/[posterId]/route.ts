@@ -3,6 +3,51 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { deleteFile } from "@/lib/delete-file";
 import { createFile } from "@/lib/create-file";
+import { getIsAdmin } from "@/actions/get-is-admin";
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { posterId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const existingFile = await db.poster.findFirst({
+      where: {
+        id: params.posterId,
+      },
+      select: {
+        posterUrl: true,
+      },
+    });
+
+    if (!existingFile) {
+      return new NextResponse("Poster Id is require", { status: 400 });
+    }
+
+    if (existingFile.posterUrl) {
+      await deleteFile(existingFile.posterUrl);
+    }
+
+    await db.poster.delete({
+      where: {
+        id: params.posterId,
+      },
+    });
+    return NextResponse.json("Poster deleted success", {
+      status: 200,
+    });
+  } catch (error) {
+    console.log("[ERROR_DELETE_POSTER]", error);
+    return NextResponse.json("Internal Error", {
+      status: 500,
+    });
+  }
+}
 
 export async function PATCH(
   req: Request,

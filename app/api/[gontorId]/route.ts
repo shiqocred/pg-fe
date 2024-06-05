@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { mapCabang } from "@/lib/utils";
 import { $Enums } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -7,10 +8,18 @@ export async function GET(
   { params }: { params: { gontorId: $Enums.CabangRole } }
 ) {
   try {
+    const current =
+      mapCabang.find((item) => item.label === params.gontorId)?.slug ?? "";
+
+    const cabangParams = current.toString().includes("putri")
+      ? current.toString().split("-")[1].toUpperCase() +
+        current.toString().split("-")[2].toUpperCase()
+      : "PUTRA" + current.toString().split("-")[1].toUpperCase();
+
     const videos = await db.video.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         isPublish: true,
       },
@@ -40,7 +49,7 @@ export async function GET(
     const photos = await db.photo.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
       },
       orderBy: { createdAt: "desc" },
@@ -59,7 +68,7 @@ export async function GET(
     const posts = await db.post.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         isPublish: true,
       },
@@ -90,7 +99,7 @@ export async function GET(
     const posters = await db.poster.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         isPublish: true,
       },
@@ -118,7 +127,7 @@ export async function GET(
     });
     const profile = await db.profile.findFirst({
       where: {
-        cabang: params.gontorId,
+        cabang: cabangParams as any,
       },
       select: {
         id: true,
@@ -131,7 +140,7 @@ export async function GET(
     const roundowns = await db.roundown.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
       },
       orderBy: {
@@ -153,7 +162,7 @@ export async function GET(
     const faqs = await db.faq.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
       },
       orderBy: {
@@ -169,7 +178,7 @@ export async function GET(
     const supervisorsChiefs = await db.supervisor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "CHIEF",
       },
@@ -190,7 +199,7 @@ export async function GET(
     const supervisorsStaff = await db.supervisor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "STAFF",
       },
@@ -211,7 +220,7 @@ export async function GET(
     const sponsorshipsUtama = await db.sponsor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "UTAMA",
       },
@@ -233,7 +242,7 @@ export async function GET(
     const sponsorshipsTunggal = await db.sponsor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "TUNGGAL",
       },
@@ -255,7 +264,7 @@ export async function GET(
     const sponsorshipsPendamping1 = await db.sponsor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "PENDAMPING1",
       },
@@ -277,7 +286,7 @@ export async function GET(
     const sponsorshipsPendamping2 = await db.sponsor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "PENDAMPING2",
       },
@@ -299,7 +308,7 @@ export async function GET(
     const sponsorshipsPendamping3 = await db.sponsor.findMany({
       where: {
         profile: {
-          cabang: params.gontorId,
+          cabang: cabangParams as any,
         },
         position: "PENDAMPING3",
       },

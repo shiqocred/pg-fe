@@ -97,7 +97,7 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
     e.preventDefault();
     try {
       const body = new FormData();
-      if (input.imageUrl) {
+      if (input.imageUrl && input.imageUrl.length > 0) {
         body.append("imageUrl", input.imageUrl[0]);
       }
       body.append("name", input.name);
@@ -293,20 +293,22 @@ export const SupervisorForm = ({ initialData }: SupervisorFormProps) => {
               )}
             </div>
             <Separator className="bg-gray-500" />
-            {!input.imageUrl && urlImage !== "" && (
-              <div className="relative w-full aspect-square overflow-hidden rounded-md">
-                <Image src={urlImage} alt="" fill className="object-cover" />
-              </div>
-            )}
-            {!input.imageUrl && urlImage === "" && (
-              <div className="w-full aspect-square flex justify-center items-center rounded-md">
-                <div className="flex flex-col items-center">
-                  <ImagePlus className="w-20 h-20 stroke-1" />
-                  <p className="font-semibold">No image previewed.</p>
+            {(!input.imageUrl || input.imageUrl.length === 0) &&
+              urlImage !== "" && (
+                <div className="relative w-full aspect-square overflow-hidden rounded-md">
+                  <Image src={urlImage} alt="" fill className="object-cover" />
                 </div>
-              </div>
-            )}
-            {input.imageUrl && (
+              )}
+            {(!input.imageUrl || input.imageUrl.length === 0) &&
+              urlImage === "" && (
+                <div className="w-full aspect-square flex justify-center items-center rounded-md">
+                  <div className="flex flex-col items-center">
+                    <ImagePlus className="w-20 h-20 stroke-1" />
+                    <p className="font-semibold">No image previewed.</p>
+                  </div>
+                </div>
+              )}
+            {input?.imageUrl && input.imageUrl.length > 0 && (
               <div className="relative w-full aspect-square overflow-hidden rounded-md">
                 <Image
                   src={URL.createObjectURL(input.imageUrl[0])}

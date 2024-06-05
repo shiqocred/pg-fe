@@ -5,6 +5,51 @@ import { mkdir, readdir, writeFile, unlink } from "fs/promises";
 import path from "path";
 import { deleteFile } from "@/lib/delete-file";
 import { createFile } from "@/lib/create-file";
+import { getIsAdmin } from "@/actions/get-is-admin";
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { blogId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const existingFile = await db.post.findFirst({
+      where: {
+        id: params.blogId,
+      },
+      select: {
+        imageUrl: true,
+      },
+    });
+
+    if (!existingFile) {
+      return new NextResponse("Blog Id is require", { status: 400 });
+    }
+
+    if (existingFile.imageUrl) {
+      await deleteFile(existingFile.imageUrl);
+    }
+
+    await db.post.delete({
+      where: {
+        id: params.blogId,
+      },
+    });
+    return NextResponse.json("Post deleted success", {
+      status: 200,
+    });
+  } catch (error) {
+    console.log("[ERROR_DELETE_BLOG]", error);
+    return NextResponse.json("Internal Error", {
+      status: 500,
+    });
+  }
+}
 
 export async function PATCH(
   req: Request,
@@ -57,6 +102,9 @@ export async function PATCH(
           isPublish: isPublish === "true" ? true : false,
         },
       });
+      return NextResponse.json("Post updated success", {
+        status: 200,
+      });
     } else {
       await db.post.update({
         where: {
@@ -71,11 +119,10 @@ export async function PATCH(
           isPublish: isPublish === "true" ? true : false,
         },
       });
+      return NextResponse.json("Post updated success", {
+        status: 200,
+      });
     }
-
-    return NextResponse.json("Post updated success", {
-      status: 200,
-    });
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

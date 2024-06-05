@@ -1,11 +1,53 @@
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { mkdir, readdir, writeFile, unlink } from "fs/promises";
-import path from "path";
 import { $Enums } from "@prisma/client";
 import { createFile } from "@/lib/create-file";
 import { deleteFile } from "@/lib/delete-file";
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { sponsorshipId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const existingFile = await db.sponsor.findFirst({
+      where: {
+        id: params.sponsorshipId,
+      },
+      select: {
+        imageUrl: true,
+      },
+    });
+
+    if (!existingFile) {
+      return new NextResponse("Sponsorship Id is require", { status: 400 });
+    }
+
+    if (existingFile.imageUrl) {
+      await deleteFile(existingFile.imageUrl);
+    }
+
+    await db.sponsor.delete({
+      where: {
+        id: params.sponsorshipId,
+      },
+    });
+    return NextResponse.json("Sponsorship deleted success", {
+      status: 200,
+    });
+  } catch (error) {
+    console.log("[ERROR_DELETE_SPONSORSHIP]", error);
+    return NextResponse.json("Internal Error", {
+      status: 500,
+    });
+  }
+}
 
 export async function PATCH(
   req: Request,

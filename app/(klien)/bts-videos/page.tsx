@@ -7,8 +7,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ArrowLeft, PlayCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,9 +16,43 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import axios from "axios";
+import { Footer } from "@/components/footer";
+
+interface VideosProps {
+  id: string;
+  title: string;
+  category: string;
+  videoUrl: string;
+  thumbnailUrl: string;
+  cabang: string;
+  date: string;
+}
 
 const BTSVideosPage = () => {
   const [isBTSOpen, setIsBTSOpen] = useState(false);
+  const [totalPage, setTotalPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [videos, setVideos] = useState<VideosProps[]>();
+
+  const handleGetData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await axios.get(`/api/videos?p=${page}`);
+      const data = res.data.data.data;
+      setVideos(data);
+      setTotalPage(res.data.data.last_page);
+    } catch (error) {
+      console.log(["ERROR_GET_VIDEOS:"], error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetData();
+  }, []);
   return (
     <main className="bg-[#EBF0E5] font-revans w-screen min-h-screen h-auto relative">
       <Navbar />
@@ -56,12 +89,12 @@ const BTSVideosPage = () => {
             />
           </DialogContent>
         </Dialog>
-        <div className="w-full flex flex-col gap-4">
-          {Array.from({ length: 5 }, (_, i) => (
+        <div className="w-full flex flex-col">
+          {videos?.map((item) => (
             <button
-              key={i}
+              key={item.id}
               onClick={() => setIsBTSOpen(true)}
-              className="group hover:bg-white/20 p-2 rounded hover:shadow"
+              className="group hover:bg-white/20 px-2 py-4 hover:shadow border-b last:border-none border-gray-500"
             >
               <Card className="w-full gap-2 flex flex-col bg-transparent shadow-none border-none items-start text-start">
                 <div className="w-full object-cover aspect-video relative rounded-md overflow-hidden shadow-md">
@@ -70,24 +103,27 @@ const BTSVideosPage = () => {
                   </div>
                   <Image
                     className="object-cover pointer-events-none"
-                    src={"/images/main/gontor1.webp"}
+                    src={item.thumbnailUrl}
                     alt=""
                     fill
                   />
                 </div>
-                <p className="bg-green-50 text-xs">Gontor 3</p>
-                <h3 className="font-bold group-hover:underline">
-                  Lorem ipsum dolor sit amet.
+                <div className="flex capitalize text-xs text-gray-700 justify-between items-center w-full">
+                  <p>{item.cabang}</p>
+                  <p>{item.date}</p>
+                </div>
+                <h3 className="font-bold group-hover:underline capitalize line-clamp-2">
+                  {item.title}
                 </h3>
-                <p className="text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Corporis sapiente non ducimus ab.
-                </p>
               </Card>
             </button>
           ))}
+          {(!videos || videos.length === 0) && (
+            <div>Oops, Nothing Blog Listed.</div>
+          )}
         </div>
       </section>
+      <Footer />
     </main>
   );
 };

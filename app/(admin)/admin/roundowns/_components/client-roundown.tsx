@@ -19,7 +19,9 @@ import { useModal } from "@/hooks/use-modal";
 export const ClientRoundown = ({
   initialData,
   cabang,
+  isLoading,
 }: {
+  isLoading: boolean;
   initialData: RoundownsProps[];
   cabang: string;
 }) => {
@@ -76,7 +78,7 @@ export const ClientRoundown = ({
     const values = new FormData();
     values.append("title", input.title);
     values.append("cabang", cabang);
-    if (input.imageUrl) {
+    if (input.imageUrl && input.imageUrl.length > 0) {
       values.append("imageUrl", input.imageUrl[0]);
     }
     if (isEditing) {
@@ -127,7 +129,7 @@ export const ClientRoundown = ({
 
   return (
     <div className="mt-6 border rounded-md p-4 relative w-full">
-      {isUpdating && (
+      {(isUpdating || isLoading) && (
         <div className="absolute h-full w-full bg-slate-500/20 rounded-md top-0 right-0 flex items-center justify-center">
           <Loader2 className="h-6 w-6 text-sky-700 animate-spin" />
         </div>
@@ -153,7 +155,7 @@ export const ClientRoundown = ({
       {isCreating ? (
         <form onSubmit={onSubmit} className="flex flex-col w-full gap-4">
           <div className="flex gap-3 flex-col md:flex-row">
-            {input.imageUrl && (
+            {input.imageUrl && input.imageUrl.length > 0 && (
               <div className="relative w-full lg:w-1/4 aspect-square overflow-hidden rounded-md group">
                 <Button
                   onClick={() => {
@@ -171,7 +173,7 @@ export const ClientRoundown = ({
                 />
               </div>
             )}
-            {!input.imageUrl && !urlImage && (
+            {(!input.imageUrl || input.imageUrl.length === 0) && !urlImage && (
               <div className="relative w-full lg:w-1/4 aspect-square overflow-hidden rounded-md group shadow-md border-gray-100 border">
                 <Image
                   src={"/images/main_image.jpg"}
@@ -181,7 +183,7 @@ export const ClientRoundown = ({
                 />
               </div>
             )}
-            {!input.imageUrl && urlImage && (
+            {(!input.imageUrl || input.imageUrl.length === 0) && urlImage && (
               <div className="relative w-full lg:w-1/4 aspect-square overflow-hidden rounded-md group shadow-md border-gray-100 border">
                 <Image
                   src={"/images/main_image.jpg"}

@@ -6,19 +6,21 @@ import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
-import { destroyBlog } from "@/actions/destroy/destroy-blog";
+import axios from "axios";
+import { useCookies } from "next-client-cookies";
 
 export const DestroyBlogModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
-
   const isModalOpen = isOpen && type === "delete-blog";
+  const cookies = useCookies();
 
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await destroyBlog(data);
+      await axios.delete(`/api/admin/blogs/${data}`);
       toast.success("Blog berhasil dihapus");
+      cookies.set("updated", "updated");
       onClose();
       router.refresh();
     } catch (error) {

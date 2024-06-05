@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
-import { destroyPhotos } from "@/actions/destroy/destroy-photos";
 import { useCookies } from "next-client-cookies";
+import axios from "axios";
 
 export const DestroyPhotosModal = () => {
   const { isOpen, onClose, type, datas } = useModal();
@@ -18,10 +18,14 @@ export const DestroyPhotosModal = () => {
 
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
+    const body = new FormData();
+    datas.map((item) => {
+      body.append("photoId", item);
+    });
     try {
-      await destroyPhotos(datas);
+      await axios.patch(`/api/admin/photos`, body);
       toast.success("Photos berhasil dihapus");
-      cookies.set("deleted", "deleted");
+      cookies.set("updated", "updated");
       onClose();
       router.refresh();
     } catch (error) {

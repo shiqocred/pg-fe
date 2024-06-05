@@ -96,7 +96,7 @@ export const PosterForm = ({ initialData }: PostersProps) => {
     e.preventDefault();
     try {
       const body = new FormData();
-      if (input.posterUrl) {
+      if (input.posterUrl && input.posterUrl.length > 0) {
         body.append("posterUrl", input.posterUrl[0]);
       }
       if (initialData.admin) {
@@ -282,7 +282,7 @@ export const PosterForm = ({ initialData }: PostersProps) => {
                 </div>
                 Image Preview
               </h3>
-              {input.posterUrl && (
+              {input.posterUrl && input.posterUrl.length > 0 && (
                 <Button
                   variant={"destructive"}
                   className="h-8 w-8 p-0"

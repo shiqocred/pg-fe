@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FormEvent, useEffect, useState } from "react";
-import { CalendarClock, CalendarIcon, Clock } from "lucide-react";
+import { CalendarClock, CalendarIcon, Clock, Loader2 } from "lucide-react";
 import { cn, formatTanggal } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import {
@@ -34,7 +34,9 @@ import { $Enums } from "@prisma/client";
 export const TimeForm = ({
   information,
   cabang,
+  isLoading,
 }: {
+  isLoading: boolean;
   cabang: $Enums.CabangRole;
   information: InfoProps | null;
 }) => {
@@ -123,7 +125,12 @@ export const TimeForm = ({
         </div>
         Tanggal, Waktu dan Tempat
       </h3>
-      <div className="flex w-full gap-4 flex-col-reverse md:flex-row">
+      <div className="flex w-full gap-4 flex-col-reverse md:flex-row relative">
+        {isLoading && (
+          <div className="w-full h-full absolute bg-gray-500/20 backdrop-blur-sm top-0 left-0 z-10 flex items-center justify-center rounded-md">
+            <Loader2 className="w-10 h-10 animate-spin text-gray-700 dark:text-white" />
+          </div>
+        )}
         <div className="flex flex-col w-full gap-3">
           <div className="flex flex-col gap-y-2 w-full">
             <Label>Tanggal</Label>

@@ -6,20 +6,22 @@ import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
-import { destroyVideo } from "@/actions/destroy/destroy-video";
-import { destroySponsorship } from "@/actions/destroy/destroy-sponsorship";
+import axios from "axios";
+import { useCookies } from "next-client-cookies";
 
 export const DestroySponsorshipModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
+  const cookies = useCookies();
 
   const isModalOpen = isOpen && type === "delete-sponsorship";
 
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await destroySponsorship(data);
+      await axios.delete(`/api/admin/sponsorships/${data}`);
       toast.success("Video berhasil dihapus");
+      cookies.set("updated", "updated");
       onClose();
       router.refresh();
     } catch (error) {

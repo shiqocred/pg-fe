@@ -109,7 +109,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
     e.preventDefault();
     try {
       const body = new FormData();
-      if (input.imageUrl) {
+      if (input.imageUrl && input.imageUrl.length > 0) {
         body.append("imageUrl", input.imageUrl[0]);
       }
       if (initialData.admin) {
@@ -337,7 +337,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
                   </div>
                   Image Preview
                 </h3>
-                {input.imageUrl && (
+                {input.imageUrl && input.imageUrl.length > 0 && (
                   <Button
                     variant={"destructive"}
                     className="h-8 w-8 p-0"
@@ -370,7 +370,7 @@ export const BlogsForm = ({ initialData }: BlogsProps) => {
                     </div>
                   </div>
                 )}
-              {input.imageUrl && input.imageUrl.length !== 0 && (
+              {input.imageUrl && input.imageUrl.length > 0 && (
                 <div className="relative w-full aspect-video overflow-hidden rounded-md">
                   <Image
                     src={URL.createObjectURL(input.imageUrl[0])}

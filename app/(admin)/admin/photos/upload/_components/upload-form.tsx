@@ -27,6 +27,7 @@ import {
   NotebookPen,
   X,
 } from "lucide-react";
+import { useCookies } from "next-client-cookies";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -47,11 +48,13 @@ export const UploadForm = ({
 
   const [input, setInput] = useState<FileList | null>(null);
 
+  const cookies = useCookies();
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const body = new FormData();
 
-    if (input) {
+    if (input && input?.length > 0) {
       Array.from({ length: input.length }, (_, i) => {
         body.append("imageUrl", input[i]);
       });
@@ -61,6 +64,7 @@ export const UploadForm = ({
     try {
       axios.post("/api/admin/photos", body);
       toast.success("Beberapa gambar berhasil ditambah");
+      cookies.set("updated", "updated");
       router.push("/admin/photos");
     } catch (error) {
       toast.success("Beberapa gambar gagal ditambah");

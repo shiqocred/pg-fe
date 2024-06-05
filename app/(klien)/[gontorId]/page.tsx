@@ -29,11 +29,12 @@ import "swiper/css/scrollbar";
 import { Swiper as SwiperType } from "swiper/types";
 import { useParams, useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { cn, formatTanggal } from "@/lib/utils";
+import { cn, formatTanggal, mapCabang } from "@/lib/utils";
 import axios from "axios";
 import { $Enums } from "@prisma/client";
 import { format, parse } from "date-fns";
 import { id } from "date-fns/locale";
+import { Footer } from "@/components/footer";
 
 interface SupervisorsProps {
   id: string;
@@ -165,13 +166,12 @@ const GontorIdPage = () => {
 
   const [dataGontor, setDataGontor] = useState<ParamsProps>();
 
+  const current =
+    mapCabang.find((item) => item.label === params.gontorId)?.slug ?? "";
+
   const handleGetGontor = async () => {
     try {
-      const cabangParams = params.gontorId.toString().includes("putri")
-        ? params.gontorId.toString().split("-")[1].toUpperCase() +
-          params.gontorId.toString().split("-")[2].toUpperCase()
-        : "PUTRA" + params.gontorId.toString().split("-")[1].toUpperCase();
-      const res = await axios.get(`/api/${cabangParams}`);
+      const res = await axios.get(`/api/${params.gontorId}`);
       setDataGontor(res.data.data);
     } catch (error) {
       console.log(["ERROR_GET_PARAMS:"], error);
@@ -247,9 +247,9 @@ const GontorIdPage = () => {
           src={
             dataGontor?.profile.heroUrl ??
             `/images/main/${
-              params.gontorId.includes("gontor-putri")
-                ? "gontorGp" + params.gontorId.toString().split("-")[2]
-                : params.gontorId.toString().split("-").join("")
+              current.includes("gontor-putri")
+                ? "gontorGp" + current.toString().split("-")[2]
+                : current.toString().split("-").join("")
             }.webp`
           }
           alt=""
@@ -401,7 +401,7 @@ const GontorIdPage = () => {
                     className="first:col-span-2 bg-transparent p-0 hover:bg-transparent w-full flex h-full group"
                   >
                     <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow-sm bg-transparent">
-                      <div className="w-full relatif object-cover aspect-video relative  rounded-md overflow-hidden shadow-md">
+                      <div className="w-full relatif object-cover first:aspect-video aspect-square relative  rounded-md overflow-hidden shadow-md">
                         <div className="w-full h-full absolute top-0 left-0 bg-white/20 backdrop-blur-sm z-20 group-hover:flex items-center justify-center hidden">
                           <PlayCircle className="w-12 h-12 stroke-[1.5]" />
                         </div>
@@ -688,19 +688,18 @@ const GontorIdPage = () => {
               </h3>
               <div className="grid grid-cols-1">
                 {dataGontor.sponsorships.tunggal.map((item) => (
-                  <Card
-                    className="aspect-square col-span-1 p-3 rounded overflow-hidden"
-                    key={item.id}
-                  >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="object-contain pointer-events-none"
-                        fill
-                      />
-                    </div>
-                  </Card>
+                  <Link href={item.href} key={item.id}>
+                    <Card className="aspect-square p-3 rounded overflow-hidden">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="object-contain pointer-events-none"
+                          fill
+                        />
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -711,19 +710,18 @@ const GontorIdPage = () => {
               </h3>
               <div className="grid grid-cols-2 gap-2">
                 {dataGontor.sponsorships.utama.map((item) => (
-                  <Card
-                    className="aspect-square col-span-1 p-2.5 rounded overflow-hidden"
-                    key={item.id}
-                  >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="object-contain pointer-events-none"
-                        fill
-                      />
-                    </div>
-                  </Card>
+                  <Link href={item.href} key={item.id}>
+                    <Card className="aspect-square p-2.5 rounded overflow-hidden">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="object-contain pointer-events-none"
+                          fill
+                        />
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -734,19 +732,18 @@ const GontorIdPage = () => {
               </h3>
               <div className="grid grid-cols-3 gap-2">
                 {dataGontor.sponsorships.pendamping_1.map((item) => (
-                  <Card
-                    className="aspect-square col-span-1 p-2 rounded overflow-hidden"
-                    key={item.id}
-                  >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="object-contain pointer-events-none"
-                        fill
-                      />
-                    </div>
-                  </Card>
+                  <Link href={item.href} key={item.id}>
+                    <Card className="aspect-square p-2 rounded overflow-hidden">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="object-contain pointer-events-none"
+                          fill
+                        />
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -757,19 +754,18 @@ const GontorIdPage = () => {
               </h3>
               <div className="grid grid-cols-4 gap-1.5">
                 {dataGontor.sponsorships.pendamping_2.map((item) => (
-                  <Card
-                    className="aspect-square col-span-1 p-1.5 rounded overflow-hidden"
-                    key={item.id}
-                  >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="object-contain pointer-events-none"
-                        fill
-                      />
-                    </div>
-                  </Card>
+                  <Link href={item.href} key={item.id}>
+                    <Card className="aspect-square p-1.5 rounded overflow-hidden">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="object-contain pointer-events-none"
+                          fill
+                        />
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -780,19 +776,18 @@ const GontorIdPage = () => {
               </h3>
               <div className="grid grid-cols-5 gap-1">
                 {dataGontor.sponsorships.pendamping_3.map((item) => (
-                  <Card
-                    className="aspect-square col-span-1 p-1 rounded overflow-hidden"
-                    key={item.id}
-                  >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="object-contain pointer-events-none"
-                        fill
-                      />
-                    </div>
-                  </Card>
+                  <Link href={item.href} key={item.id}>
+                    <Card className="aspect-square p-1 rounded overflow-hidden">
+                      <div className="relative w-full h-full">
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.name}
+                          className="object-contain pointer-events-none"
+                          fill
+                        />
+                      </div>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -808,7 +803,7 @@ const GontorIdPage = () => {
             <Accordion type="single" collapsible className="w-full">
               {dataGontor.faqs.map((item) => (
                 <AccordionItem
-                  value="faq-1"
+                  value={item.id}
                   className="border-[#7B897F]/30"
                   key={item.id}
                 >
@@ -824,6 +819,7 @@ const GontorIdPage = () => {
           </div>
         </section>
       )}
+      <Footer />
     </main>
   );
 };

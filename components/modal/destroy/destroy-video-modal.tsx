@@ -6,19 +6,22 @@ import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
-import { destroyVideo } from "@/actions/destroy/destroy-video";
+import { useCookies } from "next-client-cookies";
+import axios from "axios";
 
 export const DestroyVideoModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
+  const cookies = useCookies();
 
   const isModalOpen = isOpen && type === "delete-video";
 
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await destroyVideo(data);
+      await axios.delete(`/api/admin/blogs/${data}`);
       toast.success("Video berhasil dihapus");
+      cookies.set("updated", "updated");
       onClose();
       router.refresh();
     } catch (error) {

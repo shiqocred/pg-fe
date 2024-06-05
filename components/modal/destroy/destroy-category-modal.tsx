@@ -4,21 +4,24 @@ import { FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
-import { destroyCategory } from "@/actions/destroy/destroy-category";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
+import { useCookies } from "next-client-cookies";
+import axios from "axios";
 
 export const DestroyCaegoryModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
+  const cookies = useCookies();
 
   const isModalOpen = isOpen && type === "delete-category";
 
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await destroyCategory(data);
+      await axios.delete(`/api/admin/categories/${data}`);
       toast.success("Category berhasil dihapus");
+      cookies.set("updated", "updated");
       onClose();
       router.refresh();
     } catch (error) {

@@ -1,6 +1,34 @@
+import { getIsAdmin } from "@/actions/get-is-admin";
 import { auth } from "@/hooks/use-auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { categoryId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    await db.category.delete({
+      where: {
+        id: params.categoryId,
+      },
+    });
+    return NextResponse.json("Category deleted success", {
+      status: 200,
+    });
+  } catch (error) {
+    console.log("[ERROR_DELETE_CATEGORY]", error);
+    return NextResponse.json("Internal Error", {
+      status: 500,
+    });
+  }
+}
 
 export async function PATCH(
   req: Request,

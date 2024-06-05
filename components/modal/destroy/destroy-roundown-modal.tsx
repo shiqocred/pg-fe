@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { useModal } from "@/hooks/use-modal";
 import { Modal } from "../modal";
 import { Button } from "@/components/ui/button";
-import { destroyRoundown } from "@/actions/destroy/destroy-roundown";
 import { useCookies } from "next-client-cookies";
+import axios from "axios";
 
 export const DestroyRoundownModal = () => {
   const { isOpen, onClose, type, data } = useModal();
@@ -19,7 +19,7 @@ export const DestroyRoundownModal = () => {
   const onDelete = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await destroyRoundown(data);
+      await axios.delete(`/api/admin/roundowns/${data}`);
       toast.success("Acara berhasil dihapus");
       cookies.set("updated", "updated");
       onClose();

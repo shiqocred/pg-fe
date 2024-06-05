@@ -7,6 +7,51 @@ import { getIsAdmin } from "@/actions/get-is-admin";
 import { createFile } from "@/lib/create-file";
 import { deleteFile } from "@/lib/delete-file";
 
+export async function DELETE(
+  req: Request,
+  { params }: { params: { videoId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const existingFile = await db.video.findFirst({
+      where: {
+        id: params.videoId,
+      },
+      select: {
+        thumbnailUrl: true,
+      },
+    });
+
+    if (!existingFile) {
+      return new NextResponse("Video Id is require", { status: 400 });
+    }
+
+    if (existingFile.thumbnailUrl) {
+      await deleteFile(existingFile.thumbnailUrl);
+    }
+
+    await db.video.delete({
+      where: {
+        id: params.videoId,
+      },
+    });
+
+    return NextResponse.json("Video deleted success", {
+      status: 200,
+    });
+  } catch (error) {
+    console.log("[ERROR_DELETE_VIDEO]", error);
+    return NextResponse.json("Internal Error", {
+      status: 500,
+    });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { videoId: string } }

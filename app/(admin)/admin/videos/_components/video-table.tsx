@@ -21,6 +21,7 @@ import {
   RotateCcw,
   ChevronLeft,
   ChevronRight,
+  Loader2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
@@ -66,8 +67,10 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
   const [cabang, setCabang] = useState("");
   const cookies = useCookies();
   const { onOpen } = useModal();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGetPodters = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get(
         `/api/admin/videos?p=${page}&q=${searchValue}&s=${status}&c=${cabang}`
@@ -98,6 +101,8 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
       setTotalPage(res.data.data.last_page);
     } catch (error) {
       console.log(["ERROR_GET_VIDEOS:"], error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -137,6 +142,7 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
               className="pl-10 h-9 focus-visible:ring-1 focus-visible:ring-offset-0 border-gray-400"
               onChange={(e) => setSearch(e.target.value)}
               value={search}
+              disabled={isLoading}
             />
           </div>
           <div className="flex items-center gap-3 w-full overflow-x-scroll md:w-auto md:overflow-x-visible">
@@ -146,6 +152,7 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
                   <Button
                     variant={"outline"}
                     className="h-9 border-gray-400 border-dashed hover:bg-gray-200 flex px-3"
+                    disabled={isLoading}
                   >
                     <CircleFadingPlus className="h-4 w-4 mr-2" />
                     Kampus
@@ -202,6 +209,7 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
                 <Button
                   variant={"outline"}
                   className="h-9 border-gray-400 border-dashed hover:bg-gray-200 flex px-3"
+                  disabled={isLoading}
                 >
                   <CircleFadingPlus className="h-4 w-4 mr-2" />
                   Status
@@ -283,11 +291,12 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
             className="p-0 h-9 w-9 border-gray-500"
             variant={"outline"}
             onClick={() => cookies.set("updated", "updated")}
+            disabled={isLoading}
           >
             <RotateCcw className="w-4 h-4" />
           </Button>
           <Link href="/admin/videos/create" className="w-full md:w-auto">
-            <Button className="h-9 w-full md:w-auto">
+            <Button className="h-9 w-full md:w-auto" disabled={isLoading}>
               <PlusCircle className="w-4 h-4 mr-2" />
               Add Video
             </Button>
@@ -296,7 +305,12 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
       </div>
       {videos.length !== 0 ? (
         <div className="flex flex-col gap-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-3 rounded-lg border">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 p-3 rounded-lg border relative">
+            {isLoading && (
+              <div className="w-full h-full absolute bg-gray-500/20 backdrop-blur-sm top-0 left-0 z-10 flex items-center justify-center rounded-md">
+                <Loader2 className="w-10 h-10 animate-spin text-gray-700 dark:text-white" />
+              </div>
+            )}
             {videos.map((item) => (
               <Card key={item.id} className="col-span-1  flex flex-col">
                 <div className="flex flex-col px-2 gap-3 py-2">
@@ -408,7 +422,12 @@ export const VideoTable = ({ isAdmin }: { isAdmin: boolean }) => {
           </div>
         </div>
       ) : (
-        <div className="flex items-center justify-center p-3 rounded-lg border min-h-[200px]">
+        <div className="flex items-center justify-center p-3 rounded-lg border min-h-[200px] relative">
+          {isLoading && (
+            <div className="w-full h-full absolute bg-gray-500/20 backdrop-blur-sm top-0 left-0 z-10 flex items-center justify-center rounded-md">
+              <Loader2 className="w-10 h-10 animate-spin text-gray-700 dark:text-white" />
+            </div>
+          )}
           <div className="flex flex-col items-center gap-3">
             <DatabaseBackup className="w-20 h-20 stroke-[1.5]" />
             <p className="font-semibold">No videos listed.</p>

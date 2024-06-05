@@ -134,6 +134,9 @@ export async function POST(req: Request) {
           profileId: profileId,
         },
       });
+      return NextResponse.json("Poster added success", {
+        status: 200,
+      });
     } else {
       await db.supervisor.create({
         data: {
@@ -143,11 +146,10 @@ export async function POST(req: Request) {
           profileId: userId,
         },
       });
+      return NextResponse.json("Poster added success", {
+        status: 200,
+      });
     }
-
-    return NextResponse.json("Poster added success", {
-      status: 200,
-    });
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

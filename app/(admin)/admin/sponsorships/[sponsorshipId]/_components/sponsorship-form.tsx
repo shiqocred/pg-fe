@@ -98,7 +98,7 @@ export const SponsorshipForm = ({ initialData }: SponsorshipFormProps) => {
     e.preventDefault();
     try {
       const body = new FormData();
-      if (input.imageUrl) {
+      if (input.imageUrl && input.imageUrl.length > 0) {
         body.append("imageUrl", input.imageUrl[0]);
       }
       body.append("name", input.name);

@@ -4,6 +4,50 @@ import { NextResponse } from "next/server";
 import { createFile } from "@/lib/create-file";
 import { deleteFile } from "@/lib/delete-file";
 
+export async function DELETE(
+  req: Request,
+  { params }: { params: { supervisorId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const existingFile = await db.supervisor.findFirst({
+      where: {
+        id: params.supervisorId,
+      },
+      select: {
+        imageUrl: true,
+      },
+    });
+
+    if (!existingFile) {
+      return new NextResponse("Supervisor Id is require", { status: 400 });
+    }
+
+    if (existingFile.imageUrl) {
+      await deleteFile(existingFile.imageUrl);
+    }
+
+    await db.supervisor.delete({
+      where: {
+        id: params.supervisorId,
+      },
+    });
+    return NextResponse.json("Supervisor deleted success", {
+      status: 200,
+    });
+  } catch (error) {
+    console.log("[ERROR_DELETE_SUPERVISOR]", error);
+    return NextResponse.json("Internal Error", {
+      status: 500,
+    });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { supervisorId: string } }
