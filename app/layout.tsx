@@ -13,6 +13,15 @@ export const metadata: Metadata = {
     default: "PG699 Comitted Generation", // a default is required when creating a template
   },
   description: "Panggung Gembira Comitted Generation",
+  openGraph: {
+    images: [
+      {
+        url: "https://pg.gontor.ac.id/icon.png", // Must be an absolute URL
+        width: 146,
+        height: 142,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

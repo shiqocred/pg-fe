@@ -25,7 +25,7 @@ const GontorIdPage = () => {
     <main className="bg-[#EBF0E5] font-revans w-screen h-auto relative">
       <Navbar isGontor />
       <Client />
-      <Footer />
+      <Footer isGontorId />
     </main>
   );
 };

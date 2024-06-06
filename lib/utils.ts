@@ -24,6 +24,12 @@ export const mapCabang = [
     value: $Enums.CabangRole.PUTRA1,
   },
   {
+    label: "kampus-2",
+    kampus: "PMDG kampus 2",
+    slug: "gontor-2",
+    value: $Enums.CabangRole.PUTRA2,
+  },
+  {
     label: "kampus-3",
     kampus: "PMDG kampus 3",
     slug: "gontor-3",
@@ -58,6 +64,12 @@ export const mapCabang = [
     kampus: "PMDG kampus putri 1",
     slug: "gontor-putri-1",
     value: $Enums.CabangRole.PUTRI1,
+  },
+  {
+    label: "kampus-putri-2",
+    kampus: "PMDG kampus putri 2",
+    slug: "gontor-putri-2",
+    value: $Enums.CabangRole.PUTRI2,
   },
   {
     label: "kampus-putri-3",

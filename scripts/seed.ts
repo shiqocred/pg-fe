@@ -15,12 +15,14 @@ async function main() {
     const role = [
       "ALL",
       "PUTRA1",
+      "PUTRA2",
       "PUTRA3",
       "PUTRA4",
       "PUTRA5",
       "PUTRA6",
       "PUTRA7",
       "PUTRI1",
+      "PUTRI2",
       "PUTRI3",
       "PUTRI4",
       "PUTRI7",
@@ -38,6 +40,8 @@ async function main() {
       { username: genUser(), password: await hashes(), cabang: role[8] },
       { username: genUser(), password: await hashes(), cabang: role[9] },
       { username: genUser(), password: await hashes(), cabang: role[10] },
+      { username: genUser(), password: await hashes(), cabang: role[11] },
+      { username: genUser(), password: await hashes(), cabang: role[12] },
     ];
 
     // Simpan data ke database

@@ -164,7 +164,8 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-      {(dashboards?.videos || dashboards?.photos) && (
+      {((dashboards?.videos && dashboards?.videos.length > 0) ||
+        (dashboards?.photos && dashboards?.photos.length > 0)) && (
         <section className="flex w-full py-10 flex-col gap-2 h-full">
           <div className="w-full flex flex-col justify-center items-center mb-4">
             <p className="font-semibold text-[#7B897F] leading-none text-3xl">
@@ -396,12 +397,18 @@ const HomePage = () => {
             MORE
           </p>
         </div>
-        <div className="w-full px-3 gap-3 grid grid-cols-2">
+        <div className="w-full px-3 gap-3 grid grid-cols-1">
           <CardPondok
             href="/kampus-pusat"
             image="/images/main/gontor1.webp"
             location="Gontor, Ponorogo, Jawa Timur"
             title="Kampus Putra Pusat"
+          />
+          <CardPondok
+            href="/kampus-2"
+            image="/images/main/gontor2.webp"
+            location="Siman, Ponorogo, Jawa Timur"
+            title="Kampus Putra 2"
           />
           <CardPondok
             href="/kampus-3"
@@ -438,6 +445,12 @@ const HomePage = () => {
             image="/images/main/gontorGp1.webp"
             location="Ngawi, Jawa Timur"
             title="Kampus Putri 1"
+          />
+          <CardPondok
+            href="/kampus-putri-2"
+            image="/images/main/gontorGp2.webp"
+            location="Ngawi, Jawa Timur"
+            title="Kampus Putri 2"
           />
           <CardPondok
             href="/kampus-putri-3"

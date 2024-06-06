@@ -80,7 +80,7 @@ const Client = () => {
         <DialogContent className="p-2">
           <div className="w-full relatif object-cover aspect-square relative  rounded-md overflow-hidden">
             <Image
-              className="object-cover pointer-events-none"
+              className="object-contain pointer-events-none"
               src={urlPhoto}
               alt=""
               fill

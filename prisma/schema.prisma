@@ -16,6 +16,7 @@ datasource db {
 enum CabangRole {
   ALL
   PUTRA1
+  PUTRA2
   PUTRA3
   PUTRA4
   PUTRA5

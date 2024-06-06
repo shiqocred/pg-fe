@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import {
   Check,
   ChevronDown,
+  ContactRound,
   Home,
   ImageIcon,
   Images,
@@ -35,23 +36,50 @@ export const Navbar = ({ isGontor }: { isGontor?: boolean }) => {
 
   const menuMap = [
     {
+      label: "About",
+      href: "/about",
+      icon: ContactRound,
+    },
+    {
       label: "Blog",
-      href: isGontor ? `/${gontorId}/blogs` : "/blogs",
+      href: "/blogs",
       icon: Newspaper,
     },
     {
       label: "Video",
-      href: isGontor ? `/${gontorId}/bts-videos` : "/bts-videos",
+      href: "/bts-videos",
       icon: MonitorPlay,
     },
     {
       label: "Photo",
-      href: isGontor ? `/${gontorId}/bts-images` : "/bts-images",
+      href: "/bts-images",
       icon: ImageIcon,
     },
     {
       label: "Poster",
-      href: isGontor ? `/${gontorId}/posters` : "/posters",
+      href: "/posters",
+      icon: Images,
+    },
+  ];
+  const menuMapIsGontor = [
+    {
+      label: "Blog",
+      href: `/${gontorId}/blogs`,
+      icon: Newspaper,
+    },
+    {
+      label: "Video",
+      href: `/${gontorId}/bts-videos`,
+      icon: MonitorPlay,
+    },
+    {
+      label: "Photo",
+      href: `/${gontorId}/bts-images`,
+      icon: ImageIcon,
+    },
+    {
+      label: "Poster",
+      href: `/${gontorId}/posters`,
       icon: Images,
     },
   ];
@@ -143,24 +171,43 @@ export const Navbar = ({ isGontor }: { isGontor?: boolean }) => {
                   </Button>
                 </Link>
               </li>
-              {menuMap.map((item) => (
-                <li key={item.label}>
-                  <Link href={item.href}>
-                    <Button
-                      className={cn(
-                        "w-full hover:bg-[#7B897F]/50 bg-transparent justify-start",
-                        pathname.includes(item.href) &&
-                          "bg-[#7B897F] hover:bg-[#7B897F]/80 text-[#EBF0E5]"
-                      )}
-                      variant={"ghost"}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <item.icon className="h-4 w-4 mr-2" />
-                      {item.label}
-                    </Button>
-                  </Link>
-                </li>
-              ))}
+              {isGontor
+                ? menuMapIsGontor.map((item) => (
+                    <li key={item.label}>
+                      <Link href={item.href}>
+                        <Button
+                          className={cn(
+                            "w-full hover:bg-[#7B897F]/50 bg-transparent justify-start",
+                            pathname.includes(item.href) &&
+                              "bg-[#7B897F] hover:bg-[#7B897F]/80 text-[#EBF0E5]"
+                          )}
+                          variant={"ghost"}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <item.icon className="h-4 w-4 mr-2" />
+                          {item.label}
+                        </Button>
+                      </Link>
+                    </li>
+                  ))
+                : menuMap.map((item) => (
+                    <li key={item.label}>
+                      <Link href={item.href}>
+                        <Button
+                          className={cn(
+                            "w-full hover:bg-[#7B897F]/50 bg-transparent justify-start",
+                            pathname.includes(item.href) &&
+                              "bg-[#7B897F] hover:bg-[#7B897F]/80 text-[#EBF0E5]"
+                          )}
+                          variant={"ghost"}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <item.icon className="h-4 w-4 mr-2" />
+                          {item.label}
+                        </Button>
+                      </Link>
+                    </li>
+                  ))}
             </ul>
           </div>
         </SheetContent>

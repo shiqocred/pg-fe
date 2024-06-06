@@ -290,7 +290,7 @@ export const VideoTable = ({
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center p-3 rounded-lg border min-h-[200px]">
+            <div className="flex items-center justify-center p-3 rounded-lg min-h-[200px]">
               <div className="flex flex-col items-center gap-3">
                 <DatabaseBackup className="w-20 h-20 stroke-[1.5]" />
                 <p className="font-semibold">No photos listed.</p>
