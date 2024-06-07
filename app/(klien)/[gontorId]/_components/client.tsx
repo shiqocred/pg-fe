@@ -404,7 +404,7 @@ const Client = () => {
                           <PlayCircle className="w-12 h-12 stroke-[1.5]" />
                         </div>
                         <div className="pb-2 pt-4 overflow-hidden bg-gradient-to-b from-black/0 to-black/80 absolute bottom-0 z-10 w-full text-white text-start font-avenir font-semibold flex px-2 gap-1">
-                          <h5 className="text-sm capitalize leading-tight line-clamp-2  overflow-hidden first:text-base">
+                          <h5 className="text-xs capitalize leading-tight line-clamp-2  overflow-hidden">
                             {item.title}
                           </h5>
                         </div>
@@ -668,129 +668,32 @@ const Client = () => {
             </Swiper>
           </section>
         )}
-      {dataGontor?.sponsorships &&
-        (dataGontor.sponsorships.utama.length > 0 ||
-          dataGontor.sponsorships.tunggal.length > 0 ||
-          dataGontor.sponsorships.pendamping_1.length > 0 ||
-          dataGontor.sponsorships.pendamping_2.length > 0 ||
-          dataGontor.sponsorships.pendamping_3.length > 0) && (
-          <section className="flex w-full py-10 px-3 border-b border-[#7B897F] flex-col gap-6 h-full">
-            <div className="text-center w-full">
-              <h3 className="text-lg">Sponsorship</h3>
-              <p className="text-xs">Get closer with our sponsorship on site</p>
+      {dataGontor?.sponsorships && dataGontor.sponsorships.utama.length > 0 && (
+        <section className="flex w-full py-10 px-3 border-b border-[#7B897F] flex-col gap-6 h-full">
+          <div className="text-center w-full">
+            <h3 className="text-lg">Sponsorship</h3>
+            <p className="text-xs">Get closer with our sponsorship on site</p>
+          </div>
+          <div>
+            <div className="grid grid-cols-2 gap-2">
+              {dataGontor.sponsorships.utama.map((item) => (
+                <Link href={item.href} key={item.id}>
+                  <Card className="aspect-square p-2.5 rounded overflow-hidden">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="object-contain pointer-events-none"
+                        fill
+                      />
+                    </div>
+                  </Card>
+                </Link>
+              ))}
             </div>
-            <div>
-              <h3 className="text-sm flex items-center gap-1 leading-none mb-2 border-b border-gray-300">
-                <ShieldCheck className="h-3 w-3 mb-1" />
-                Sponsor Tunggal
-              </h3>
-              <div className="grid grid-cols-1">
-                {dataGontor.sponsorships.tunggal.map((item) => (
-                  <Link href={item.href} key={item.id}>
-                    <Card className="aspect-square p-3 rounded overflow-hidden">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="object-contain pointer-events-none"
-                          fill
-                        />
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm flex items-center gap-1 leading-none mb-2 border-b border-gray-300">
-                <ShieldCheck className="h-3 w-3 mb-1" />
-                Sponsor Utama
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                {dataGontor.sponsorships.utama.map((item) => (
-                  <Link href={item.href} key={item.id}>
-                    <Card className="aspect-square p-2.5 rounded overflow-hidden">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="object-contain pointer-events-none"
-                          fill
-                        />
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm flex items-center gap-1 leading-none mb-2 border-b border-gray-300">
-                <ShieldCheck className="h-3 w-3 mb-1" />
-                Sponsor Pendamping 1
-              </h3>
-              <div className="grid grid-cols-3 gap-2">
-                {dataGontor.sponsorships.pendamping_1.map((item) => (
-                  <Link href={item.href} key={item.id}>
-                    <Card className="aspect-square p-2 rounded overflow-hidden">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="object-contain pointer-events-none"
-                          fill
-                        />
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm flex items-center gap-1 leading-none mb-2 border-b border-gray-300">
-                <ShieldCheck className="h-3 w-3 mb-1" />
-                Sponsor Pendamping 2
-              </h3>
-              <div className="grid grid-cols-4 gap-1.5">
-                {dataGontor.sponsorships.pendamping_2.map((item) => (
-                  <Link href={item.href} key={item.id}>
-                    <Card className="aspect-square p-1.5 rounded overflow-hidden">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="object-contain pointer-events-none"
-                          fill
-                        />
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm flex items-center gap-1 leading-none mb-2 border-b border-gray-300">
-                <ShieldCheck className="h-3 w-3 mb-1" />
-                Sponsor Pendamping 3
-              </h3>
-              <div className="grid grid-cols-5 gap-1">
-                {dataGontor.sponsorships.pendamping_3.map((item) => (
-                  <Link href={item.href} key={item.id}>
-                    <Card className="aspect-square p-1 rounded overflow-hidden">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="object-contain pointer-events-none"
-                          fill
-                        />
-                      </div>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+          </div>
+        </section>
+      )}
       {dataGontor?.faqs && dataGontor.faqs.length > 0 && (
         <section className="flex w-full py-10 px-3 border-b border-[#7B897F] flex-col gap-6 h-full">
           <div className="text-center w-full">

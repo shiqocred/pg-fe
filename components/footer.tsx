@@ -10,6 +10,14 @@ export const Footer = ({ isGontorId = false }: { isGontorId?: boolean }) => {
   return (
     <section className="w-screen relative overflow-x-hidden pt-10 px-3 font-avenir ">
       <div className="flex w-full items-center">
+        <div className="w-[60px] relative aspect-[629/540]">
+          <Image
+            src={"/images/main/100thn.webp"}
+            alt="100 Tahun Gontor"
+            fill
+            className="object-contain"
+          />
+        </div>
         <div className="w-[60px] relative aspect-square">
           <Image
             src={"/images/main/10.webp"}

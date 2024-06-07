@@ -33,10 +33,16 @@ const Client = () => {
   const [isBTSOpen, setIsBTSOpen] = useState(false);
   const [totalPage, setTotalPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [urlVideo, setUrlVideo] = useState("");
   const [page, setPage] = useState(1);
   const [videos, setVideos] = useState<VideosProps[]>();
   const router = useRouter();
   const { gontorId } = useParams();
+
+  const handleOpen = (data: string) => {
+    setIsBTSOpen(true);
+    setUrlVideo(data);
+  };
 
   const handleGetData = async () => {
     setIsLoading(true);
@@ -86,9 +92,10 @@ const Client = () => {
       <Dialog open={isBTSOpen} onOpenChange={setIsBTSOpen}>
         <DialogContent className="p-2">
           <iframe
-            src={`https://www.youtube.com/embed/QwbK1GUWN30?vq=hd1080&modestbranding=1&rel=0&hl=id-ID`}
+            src={`https://www.youtube.com/embed/${urlVideo}?vq=hd1080&modestbranding=1&rel=0&hl=id-ID`}
             className="w-full aspect-video rounded-md"
             title={"fgh"}
+            allowFullScreen
           />
         </DialogContent>
       </Dialog>
@@ -96,7 +103,7 @@ const Client = () => {
         {videos?.map((item) => (
           <button
             key={item.id}
-            onClick={() => setIsBTSOpen(true)}
+            onClick={() => handleOpen(item.videoUrl)}
             className="group hover:bg-white/20 px-2 py-4 hover:shadow border-b last:border-none border-gray-500"
           >
             <Card className="w-full gap-2 flex flex-col bg-transparent shadow-none border-none items-start text-start">
@@ -122,7 +129,7 @@ const Client = () => {
           </button>
         ))}
         {(!videos || videos.length === 0) && (
-          <div>Oops, Nothing Blog Listed.</div>
+          <div>Oops, Nothing Videos Listed.</div>
         )}
       </div>
     </section>

@@ -17,7 +17,6 @@ import {
   MonitorPlay,
   Newspaper,
   SquareLibrary,
-  Users,
 } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -101,7 +100,7 @@ const AdminPage = () => {
           </div>
         </DialogContent>
       </Dialog>
-      <div className="w-full grid grid-cols-4 gap-5">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         <Card className="w-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Categories</CardTitle>
@@ -135,7 +134,7 @@ const AdminPage = () => {
           </CardContent>
         </Card>
         <div className="flex flex-col gap-5 h-full">
-          <Card className="w-full h-full">
+          <Card className="w-full h-[53px]">
             <CardHeader className="flex flex-row items-center justify-between h-full p-0 px-5 space-y-0">
               <CardTitle className="text-sm font-medium">
                 Supervisor Chiefes
@@ -145,7 +144,7 @@ const AdminPage = () => {
               </div>
             </CardHeader>
           </Card>
-          <Card className="w-full h-full">
+          <Card className="w-full h-[53px]">
             <CardHeader className="flex flex-row items-center justify-between h-full p-0 px-5 space-y-0">
               <CardTitle className="text-sm font-medium">
                 Supervisor Chiefes
@@ -155,7 +154,7 @@ const AdminPage = () => {
           </Card>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
         <div className="col-span-1 flex flex-col gap-5">
           <Card className="w-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -258,9 +257,9 @@ const AdminPage = () => {
             </CardHeader>
           </Card>
         </div>
-        <div className="col-span-2  w-full">
+        <div className="col-span-1 md:col-span-2  w-full pb-20 xl:pb-10">
           <Card className="w-full p-3 ">
-            <ScrollArea className="h-[424px] ">
+            <ScrollArea className="h-[483px] lg:h-[424px] ">
               <div className="gap-3 flex flex-col">
                 {data &&
                   data.profile.length > 0 &&
@@ -278,8 +277,8 @@ const AdminPage = () => {
                         </CardTitle>
                         <Separator className="bg-gray-500" />
                       </CardHeader>
-                      <CardContent className="py-1 text-xs text-gray-700 font-light">
-                        <div className="flex w-full gap-5">
+                      <CardContent className="py-1 text-xs text-gray-700 font-light gap-1 lg:gap-0">
+                        <div className="flex flex-col lg:flex-row w-full gap-1 lg:gap-5">
                           <div className="flex items-center justify-between gap-3 w-full py-1">
                             <p>Hero Image:</p>
                             <p className="italic flex items-center">
@@ -300,7 +299,7 @@ const AdminPage = () => {
                             </p>
                           </div>
                         </div>
-                        <div className="flex w-full gap-5">
+                        <div className="flex flex-col lg:flex-row w-full gap-1 lg:gap-5">
                           <div className="flex items-center justify-between gap-3 w-full py-1">
                             <p>Tanggal:</p>
                             <p className={!item.tanggal ? "italic" : ""}>
