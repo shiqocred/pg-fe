@@ -4,6 +4,44 @@ import { NextResponse } from "next/server";
 import { createFile } from "@/lib/create-file";
 import { deleteFile } from "@/lib/delete-file";
 
+export async function GET(
+  req: Request,
+  { params }: { params: { roundownId: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!params.roundownId) {
+      return new NextResponse("Roundown id is required", { status: 400 });
+    }
+
+    const roundown = await db.roundown.findFirst({
+      where: {
+        id: params.roundownId,
+      },
+      select: {
+        id: true,
+        title: true,
+        imageUrl: true,
+      },
+    });
+
+    return NextResponse.json(
+      { message: "roundown is match", roundowns: roundown },
+      {
+        status: 200,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
 export async function DELETE(
   req: Request,
   { params }: { params: { roundownId: string } }
@@ -64,9 +102,6 @@ export async function PATCH(
     const title: string = data.get("title") as unknown as string;
 
     if (file) {
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
       const existingFile = await db.roundown.findFirst({
         where: {
           id: params.roundownId,

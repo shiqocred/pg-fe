@@ -11,10 +11,18 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { AcaraList } from "./acara-list";
 import Image from "next/image";
-import { getDetailRoundown } from "@/actions/get-detail-roundown";
 import { RoundownsProps } from "./client";
 import { useCookies } from "next-client-cookies";
 import { useModal } from "@/hooks/use-modal";
+
+interface RoundownProps {
+  message: string;
+  data: {
+    id: string;
+    title: string;
+    imageUrl: string | null;
+  };
+}
 
 export const ClientRoundown = ({
   initialData,
@@ -47,15 +55,15 @@ export const ClientRoundown = ({
     setIsCreating((e) => !e);
   };
 
-  const getDetail = async (faqId: string) => {
+  const getDetail = async (roundownId: string) => {
     try {
-      const res = await getDetailRoundown(faqId);
+      const res = await axios.get(`/api/admin/roundowns/${roundownId}`);
       if (res) {
         setIsEditing(true);
         setIsCreating(true);
-        setInput((prev) => ({ ...prev, title: res.title }));
-        setUrlImage(res.imageUrl ?? "");
-        setEditId(res.id);
+        setInput((prev) => ({ ...prev, title: res.data.roundowns.title }));
+        setUrlImage(res.data.roundowns.imageUrl ?? "");
+        setEditId(res.data.roundowns.id);
       }
     } catch (error) {
       console.log("ERROR_GET_DETAIL", error);
@@ -142,11 +150,11 @@ export const ClientRoundown = ({
           List Roundowns
         </h3>
         {isCreating ? (
-          <Button variant={"outline"} onClick={handleClose}>
+          <Button variant={"outline"} type="button" onClick={handleClose}>
             Cancel
           </Button>
         ) : (
-          <Button variant={"outline"} onClick={toggleCreating}>
+          <Button variant={"outline"} type="button" onClick={toggleCreating}>
             <PlusCircle className="h-4 w-4 mr-2" />
             Tambah Acara
           </Button>
@@ -185,12 +193,7 @@ export const ClientRoundown = ({
             )}
             {(!input.imageUrl || input.imageUrl.length === 0) && urlImage && (
               <div className="relative w-full lg:w-1/4 aspect-square overflow-hidden rounded-md group shadow-md border-gray-100 border">
-                <Image
-                  src={"/images/main_image.jpg"}
-                  alt=""
-                  fill
-                  className="object-cover"
-                />
+                <Image src={urlImage} alt="" fill className="object-cover" />
               </div>
             )}
             <div className="w-full lg:w-3/4">

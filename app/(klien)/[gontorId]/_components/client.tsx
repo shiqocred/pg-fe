@@ -33,6 +33,7 @@ import axios from "axios";
 import { $Enums } from "@prisma/client";
 import { format, parse } from "date-fns";
 import { id } from "date-fns/locale";
+import { Separator } from "@/components/ui/separator";
 
 interface SupervisorsProps {
   id: string;
@@ -328,23 +329,26 @@ const Client = () => {
             </p>
           </div>
           <div className="flex gap-2 w-full relative">
-            <div className="flex flex-col w-full *:text-xs *:h-8 *:justify-start *:font-normal hover:*:bg-[#7B897F]/40 *:text-black">
+            <div className="w-full overflow-hidde">
               {dataGontor.roundowns.map((item) => (
-                <Button
-                  key={item.id}
-                  className={cn(
-                    "capitalize",
-                    isPerformance === item.id
-                      ? "bg-[#7B897F]/40"
-                      : "bg-transparent"
-                  )}
-                  onMouseEnter={(e) => {
-                    e.preventDefault();
-                    setIsPerformance(item.id);
-                  }}
-                >
-                  {item.title}
-                </Button>
+                <>
+                  <Button
+                    key={item.id}
+                    className={cn(
+                      "capitalize text-start line-clamp-2 text-wrap py-2 pl-2 pr-0 text-xs h-auto font-normal hover:bg-[#7B897F]/40 text-black w-full",
+                      isPerformance === item.id
+                        ? "bg-[#7B897F]/40"
+                        : "bg-transparent"
+                    )}
+                    onMouseEnter={(e) => {
+                      e.preventDefault();
+                      setIsPerformance(item.id);
+                    }}
+                  >
+                    {item.title}
+                  </Button>
+                  <Separator className="bg-gray-300" />
+                </>
               ))}
             </div>
             <div className="w-full">

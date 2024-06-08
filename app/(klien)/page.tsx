@@ -87,7 +87,9 @@ interface DashboardProps {
 
 const HomePage = () => {
   const [isBTSOpen, setIsBTSOpen] = useState(false);
+  const [isBTSPhotoOpen, setIsBTSPhotoOpen] = useState(false);
   const [urlVideo, setUrlVideo] = useState("");
+  const [urlPhoto, setUrlPhoto] = useState("");
   const router = useRouter();
   const dashboardRef = useRef<SwiperType>();
 
@@ -109,6 +111,10 @@ const HomePage = () => {
     } else {
       setUrlVideo(data);
     }
+  };
+  const handleOpenPhoto = (data: string) => {
+    setUrlVideo(data);
+    setIsBTSPhotoOpen(true);
   };
 
   useEffect(() => {
@@ -192,6 +198,18 @@ const HomePage = () => {
                     />
                   </DialogContent>
                 </Dialog>
+                <Dialog open={isBTSPhotoOpen} onOpenChange={setIsBTSPhotoOpen}>
+                  <DialogContent className="p-2">
+                    <div className="w-full relatif object-cover aspect-square relative  rounded-md overflow-hidden">
+                      <Image
+                        className="object-contain pointer-events-none"
+                        src={urlPhoto}
+                        alt=""
+                        fill
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 {dashboards.videos.map((item) => (
                   <Button
@@ -243,6 +261,7 @@ const HomePage = () => {
                   <Button
                     key={item.id}
                     className="col-span-1 bg-transparent p-0 hover:bg-transparent w-full flex h-full group"
+                    onClick={() => handleOpenPhoto(item.imageUrl)}
                   >
                     <Card className="w-full gap-2 flex flex-col overflow-hidden rounded-md shadow-sm bg-transparent">
                       <div className="w-full relatif object-cover aspect-square relative  rounded-md overflow-hidden">
